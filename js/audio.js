@@ -7,7 +7,7 @@ var initAudio = function() {
     musicBg.src = 'mp3/bg.mp3';
     document.body.appendChild(musicBg);
     musicGmf = document.createElement("audio");
-    musicGmf.src = 'mp3/good.wav';
+    musicGmf.src = 'mp3/gmf0.wav';
     document.body.appendChild(musicGmf);
     musicCrash = document.createElement("audio");
     musicCrash.src = 'mp3/crash.wav';

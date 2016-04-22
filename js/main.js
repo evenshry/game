@@ -19,7 +19,7 @@ var startTime,
 var stepLength = 2000;
 // 初始化页面
 $(function() {
-    //loadPlayerCnt();
+    loadPlayerCnt();
     initAudio();
     $('#submitPwd').on('touchstart', function() {
         var pwd = $('#password').val();
@@ -128,6 +128,10 @@ var resetStage = function() {
     GAME.canvas.height = winHeight;
     GAME.context = GAME.canvas.getContext('2d');
     canvasContainer.appendChild(GAME.canvas);
+    GAME.context.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
+    document.getElementById('timer').innerText = '';
+    document.getElementById('miles').innerText = '';
+    GAME.children = {};
     player = null;
     shadow = null;
     monsters = [];
@@ -170,7 +174,7 @@ var loop = function() {
         GAME.updateChildren();
         requestAnimationFrame(loop);
     } else {
-        finishGame((runingTime / 1000).toFixed(1), gmfCounts);
+        finishGame(formatMilli(runingTime), gmfCounts);
     }
 };
 var nextMonster = false,
@@ -297,7 +301,7 @@ var popupTip = function(msg, f) {
 //============================= :: AJAX :: ===============================//
 //========================================================================//
 //var service = 'http://ijita.me/game/';
-var service = 'http://localhost:8080/wechat_game/game/server/';
+var service = 'server/';
 var executeAjax = function(opt) {
     $.ajax({
         url: opt.url,
@@ -347,10 +351,11 @@ var loadPlayerCnt = function() {
 // 游戏结束
 var finishGame = function(timeCount, gmfCount) {
     var uid = $.fn.cookie('uid');
+    var timeTik = parseFloat(timeCount.replace('\'', '.'));
     executeAjax({
         url: service + 'finish.php',
         data: {
-            total_time: timeCount,
+            total_time: timeTik,
             gmf_times: gmfCount,
             uid: uid
         },
@@ -360,8 +365,10 @@ var finishGame = function(timeCount, gmfCount) {
                 $.fn.cookie('uid', data.uid, {
                     expires: 7
                 });
-                document.getElementById('timeCount').innerText = formatMilli(timeCount);
+                document.getElementById('timeCount').innerText = timeCount;
                 document.getElementById('gmfCount').innerText = gmfCount;
+                document.getElementById('bestTime').innerText = data.total_time;
+                document.getElementById('gmfCountAll').innerText = data.gmf_times;
                 document.getElementById('currentRank').innerText = data.rank_id;
                 document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
                 $('#gameAfter').show();

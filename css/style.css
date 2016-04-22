@@ -294,7 +294,7 @@ audio {
 }
 
 .btn_m {
-    width: 86px;
+    width: 190px;
     background: #41BD43;
 }
 
@@ -407,4 +407,74 @@ audio {
 .dialog_tab .dialog_tab_bd p a {
     color: #CECB30;
     text-decoration: underline;
+}
+
+
+/***************** loadingBox *********************/
+
+.loadingBg {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
+.loadingBox {
+    z-index: 10;
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 10px;
+    margin: auto;
+}
+
+.loadingBox>div {
+    background-color: #67CF22;
+    height: 100%;
+    width: 6px;
+    float: left;
+    margin-left: 4px;
+    -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+    animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+.loadingBox .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+
+.loadingBox .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+.loadingBox .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+
+.loadingBox .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+
+@-webkit-keyframes stretchdelay {
+    0%, 40%, 100% {
+        -webkit-transform: scaleY(0.4)
+    }
+    20% {
+        -webkit-transform: scaleY(1.0)
+    }
+}
+
+@keyframes stretchdelay {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+    }
+    20% {
+        transform: scaleY(1.0);
+        -webkit-transform: scaleY(1.0);
+    }
 }
