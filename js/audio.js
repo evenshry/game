@@ -32,8 +32,10 @@ var muted = function() {
     if (musicBg.muted) {
         musicBg.muted = false;
         musicGmf.muted = false;
+        musicCrash.muted = false;
     } else {
         musicBg.muted = true;
         musicGmf.muted = true;
+        musicCrash.muted = true;
     }
 };

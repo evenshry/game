@@ -61,6 +61,7 @@ $(function() {
 });
 //引导页
 var firstGuide = function() {
+    musicBg.play();
     $('#guide').on('touchstart', function() {
         $(this).hide();
         startGame();
@@ -295,7 +296,7 @@ var popupTip = function(msg, f) {
     var htmlContent = '<div id="' + id + '" class="crashTip self_center ' + f + '">' + msg + '</div>';
     $('#gameing').append(htmlContent);
     var top = $('#' + id).position().top;
-    $('#' + id).css('top', top - winHeight / 4);
+    $('#' + id).css('top', top - winHeight / 1.6);
     setTimeout(function() {
         $('#' + id).remove();
     }, 1000);

@@ -287,9 +287,9 @@ Monster.prototype.crash = function() {
             musicGmf.play();
         }
     } else {
-        startTime -= 1000;
         popupTip('+' + DF.AddTime.toFixed(1) + 's');
         DF.AddTime += 0.1;
+        startTime -= 1000 * DF.AddTime;
         if (isPlayMusic) {
             musicCrash.play();
         }
