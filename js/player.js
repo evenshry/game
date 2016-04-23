@@ -21,7 +21,7 @@ var DF = {
         jumpSpeed: 5,
         gravity: 0.25,
         cutImgTimeFinal: 25,
-        cutImgTime: 25,
+        cutImgTime: 10,
         cutImgIndex: 0
     },
     Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100']
@@ -33,7 +33,7 @@ var DF = {
 var Player = function() {
     GAME.Sprite.apply(this, ['player', 'images/player0.png', 66, 122, 3]);
     var x = winWidth / 2;
-    var y = winHeight - DF.M.maxPath / 5 * 3;
+    var y = winHeight - DF.M.maxPath / 10 * 7;
     this.setAnchorPoint(0.5, 1);
     this.setPosition(x, y);
     this.last = {
@@ -106,6 +106,7 @@ Player.prototype.jump = function() {
             this.jumpDirect = 0;
         }
     } else {
+        DF.P.cutImgTime = DF.P.cutImgTimeFinal;//fix cutImage
         this.jumping = false;
         DF.P.jumpSpeed = DF.P.jumpSpeedFinal;
         this.setPosition(this.last.x, this.last.y);
@@ -139,7 +140,7 @@ Player.prototype.move = function() {
 var Shadow = function() {
     GAME.Sprite.apply(this, ['shadow', 'images/shadow.png', 70, 67, 1]);
     var x = winWidth / 2;
-    var y = winHeight - DF.M.maxPath / 5 * 3 + 40;
+    var y = winHeight - DF.M.maxPath / 10 * 7 + 40;
     this.setAnchorPoint(0.5, 1);
     this.setPosition(x, y);
     this.last = {

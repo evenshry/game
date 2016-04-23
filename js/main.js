@@ -12,7 +12,9 @@ var canvasContainer, canvas, context;
 var player, shadow, monsters = [],
     asideMiles = [];
 var winWidth, winHeight, isGuide = false;
-var startTouchPoint, touchCache = 0.2;
+var startTouchPoint;
+var touchCacheX = 0.15,
+    touchCacheY = 0.2;
 var startTime,
     refreshDelay = 24,
     gmfCounts = 0;
@@ -70,23 +72,24 @@ var initStage = function() {
     window.onresize = resizeHandler;
     resetStage(); //重置舞台
     var myTouch = util.toucher(document.getElementById('gameing'));
+    var len = winHeight > winWidth ? winWidth : winHeight;
     myTouch.on('swipe', function(e) {
-        if (e.moveX >= winWidth * touchCache) { //right
-            if (!player.moving) {
+        if (e.moveX >= len * touchCacheX) { //right
+            if (!player.moving && !player.jumping) {
                 player.moving = true;
                 player.moveDirect = 1;
                 shadow.moving = true;
                 shadow.moveDirect = 1;
             }
-        } else if (e.moveX <= -winWidth * touchCache) { //left
-            if (!player.moving) {
+        } else if (e.moveX <= -len * touchCacheX) { //left
+            if (!player.moving && !player.jumping) {
                 player.moving = true;
                 player.moveDirect = -1;
                 shadow.moving = true;
                 shadow.moveDirect = -1;
             }
         }
-        if (e.moveY <= -winWidth * touchCache) { //up
+        if (e.moveY <= -len * touchCacheY) { //up
             if (!player.jumping) {
                 player.jumping = true;
                 player.jumpDirect = 1;
@@ -114,12 +117,12 @@ var resizeHandler = function() {
 var resetStage = function() {
     winWidth = $(canvasContainer).width();
     winHeight = $(canvasContainer).height();
-    DF.M.maxPath = getScaleY(HEIGHT - yl);
-    DF.M.maxPathMile = getScaleY(HEIGHT - yl);
+    DF.M.maxPath = getScaleY(HEIGHT - yl - 25);
+    DF.M.maxPathMile = getScaleY(HEIGHT - yl - 25);
     DF.M.moveSpeed = winHeight * 0.009;
     DF.P.moveSpeed = winHeight * 0.006;
     var k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
-    DF.P.pathWidth = DF.M.maxPath / 10 * 7 * k;
+    DF.P.pathWidth = DF.M.maxPath / 10 * 6 * k;
     if (GAME.canvas) {
         canvasContainer.removeChild(GAME.canvas);
     }
