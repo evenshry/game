@@ -121,6 +121,18 @@ audio {
     color: #FFD800;
 }
 
+.background .musicOn {
+    position: absolute;
+    top: 10%;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    background: url(../images/music_on.png) no-repeat center center;
+}
+.background .musicOff {
+    background-image: url(../images/music_off.png)
+}
+
 .crashTip {
     font: bold 3em/3em 'Microsoft Yahei', Helvetica, Arial, sans-serif;
     position: absolute;

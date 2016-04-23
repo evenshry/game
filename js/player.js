@@ -24,7 +24,8 @@ var DF = {
         cutImgTime: 10,
         cutImgIndex: 0
     },
-    Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100']
+    Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100'],
+    AddTime: 1
 };
 //========================================================================//
 //======================== :: Player :: ==================================//
@@ -106,7 +107,7 @@ Player.prototype.jump = function() {
             this.jumpDirect = 0;
         }
     } else {
-        DF.P.cutImgTime = DF.P.cutImgTimeFinal;//fix cutImage
+        DF.P.cutImgTime = DF.P.cutImgTimeFinal; //fix cutImage
         this.jumping = false;
         DF.P.jumpSpeed = DF.P.jumpSpeedFinal;
         this.setPosition(this.last.x, this.last.y);
@@ -281,12 +282,14 @@ Monster.prototype.crash = function() {
     if (this.type === DF.M.types[0]) {
         popupTip('gmf+1', 'fc_or');
         gmfCounts++;
+        DF.AddTime = 1;
         if (isPlayMusic) {
             musicGmf.play();
         }
     } else {
         startTime -= 1000;
-        popupTip('+1s');
+        popupTip('+' + DF.AddTime.toFixed(1) + 's');
+        DF.AddTime += 0.1;
         if (isPlayMusic) {
             musicCrash.play();
         }
