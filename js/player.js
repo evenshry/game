@@ -4,7 +4,7 @@
 var DF = {
     M: {
         //types: ['Coin', 'Badminton', 'Baseball', 'Basketball', 'Soccer', 'Tennis', 'Volleyball'],
-        types: ['shou', 'zuqiu', 'langan'],
+        types: ['shou', 'zuqiu', 'langan', 'lanqiu', 'feibiao'],
         moveSpeed: 0,
         maxPath: 0,
         scale: 0.2,
@@ -32,7 +32,7 @@ var DF = {
 //========================================================================//
 // 创建
 var Player = function() {
-    GAME.Sprite.apply(this, ['player', 'images/player0.png', 66, 122, 3]);
+    GAME.Sprite.apply(this, ['player', 'images/player0.png', DF.P.pathWidth, DF.P.pathWidth * 2, 3]);
     var x = winWidth / 2;
     var y = winHeight - DF.M.maxPath / 10 * 7;
     this.setAnchorPoint(0.5, 1);
@@ -139,7 +139,7 @@ Player.prototype.move = function() {
 //======================== :: Shadow :: ==================================//
 //========================================================================//
 var Shadow = function() {
-    GAME.Sprite.apply(this, ['shadow', 'images/shadow.png', 70, 67, 1]);
+    GAME.Sprite.apply(this, ['shadow', 'images/shadow.png', DF.P.pathWidth + 10, DF.P.pathWidth + 10, 1]);
     var x = winWidth / 2;
     var y = winHeight - DF.M.maxPath / 10 * 7 + 40;
     this.setAnchorPoint(0.5, 1);
@@ -189,15 +189,22 @@ Shadow.prototype.move = function() {
 //========================================================================//
 // 创建
 var Monster = function(type, pathIndex, width, height, index) {
-    GAME.Sprite.apply(this, [type + index, 'images/' + type + '0.png', width, height, 2]);
+    var zindex = 2;
+    if (type === DF.M.types[4] || type === 'zhongdian') {
+        zindex = 4;
+    }
+    GAME.Sprite.apply(this, [type + index, 'images/' + type + '0.png', width, height, zindex]);
     var x = pathIndex == 1 ? getScaleX(xd1) : (pathIndex == 3 ? getScaleX(xd2) : winWidth / 2);
-    if (type === 'langan') {
+    if (type === DF.M.types[2]) {
         x = pathIndex == 1 ? winWidth / 3 : winWidth / 3 * 2;
     }
     var y = winHeight;
     this.setPosition(x, y);
     this.images = [];
-    var imageLength = type === DF.M.types[1] ? 4 : 1;
+    var imageLength = 1;
+    if (type === DF.M.types[1] || type === DF.M.types[3]) {
+        imageLength = 4;
+    }
     for (var i = 0; i < imageLength; i++) {
         var image = new Image();
         image.width = this.width;
@@ -215,13 +222,20 @@ var Monster = function(type, pathIndex, width, height, index) {
 Monster.prototype.update = function(target) {
     var distH = (this.getCurrentHeight()) * 0.5,
         distW = (this.getCurrentWidth()) * 0.5;
-    if (target.jumping) {
-        if (this.getPositionY() - target.getPositionY() < target.getCurrentHeight() * 0.5) {}
-    } else {
-        if (target.getPositionY() - this.getPositionY() > target.getCurrentHeight() * 0.5) {} else {}
-        if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
-            if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
-                this.crash();
+    if (this.type != 'zhongdian') {
+        if (target.jumping) {
+            if (this.type === DF.M.types[4]) {
+                if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
+                    if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
+                        this.crash();
+                    }
+                }
+            }
+        } else {
+            if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
+                if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
+                    this.crash();
+                }
             }
         }
     }
@@ -260,7 +274,7 @@ Monster.prototype.move = function() {
 };
 // 切图
 Monster.prototype.cutImg = function() {
-    if (this.type === DF.M.types[1]) {
+    if (this.type === DF.M.types[1] || this.type === DF.M.types[3]) {
         if (DF.M.cutImgTime === 0) {
             DF.M.cutImgIndex++;
             if (DF.M.cutImgIndex >= 3) {

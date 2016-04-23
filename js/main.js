@@ -18,7 +18,7 @@ var touchCacheX = 0.15,
 var startTime,
     refreshDelay = 24,
     gmfCounts = 0;
-var stepLength = 2000;
+var stepLength = 1000;
 // 初始化页面
 $(function() {
     loadPlayerCnt();
@@ -61,7 +61,7 @@ $(function() {
 });
 //引导页
 var firstGuide = function() {
-    musicBg.play();
+    //musicBg.play();
     $('#guide').on('touchstart', function() {
         $(this).hide();
         startGame();
@@ -164,7 +164,7 @@ var loop = function() {
     currTime = new Date().getTime();
     var runingTime = currTime - startTime;
     var isContinue = true;
-    if (mileIndex >= 19) {
+    if (mileIndex >= 20) {
         mileIndex = 0;
         isContinue = false;
     }
@@ -184,23 +184,29 @@ var loop = function() {
 var nextMonster = false,
     monIndex = 0,
     nextMonTime = null,
-    currTime = null;
+    currTime = null,
+    isFinishGame = false;
 // 随机加载障碍
 var renderMonster = function() {
     if (currTime > nextMonTime && nextMonster) {
         nextMonster = false;
     }
-    if (!nextMonster) {
+    if (!nextMonster && !isFinishGame) {
         var randomTime = getRoundVal(500, 1000);
         var type = getRoundVal(0, DF.M.types.length - 1);
-        var pathIndex;
+        var pathIndex, pathWidth = winWidth / 3;
         if (type === 2) {
             pathIndex = getRoundVal(0, 1) === 0 ? 1 : 3;
-            temp = new Monster(DF.M.types[type], pathIndex, winWidth / 3 * 2, winWidth / 3, monIndex);
-            temp.k = Math.abs((getScaleX(xlc) - winHeight / 3) / (winHeight - getScaleY(yl)));
+            temp = new Monster(DF.M.types[type], pathIndex, pathWidth * 2, pathWidth, monIndex);
+            temp.k = Math.abs((getScaleX(xlc) - pathWidth) / (winHeight - getScaleY(yl)));
+        } else if (type === 4) {
+            pathIndex = getRoundVal(1, 2);
+            temp = new Monster(DF.M.types[type], pathIndex, pathWidth, pathWidth * 2, monIndex);
+            temp.k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
+            // temp.setAnchorPoint(0.5, 1);
         } else {
             pathIndex = getRoundVal(1, 2);
-            temp = new Monster(DF.M.types[type], pathIndex, 90, 90, monIndex);
+            temp = new Monster(DF.M.types[type], pathIndex, pathWidth / 3 * 2, pathWidth / 3 * 2, monIndex);
             temp.k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
         }
         nextMonTime = currTime + randomTime;
@@ -222,12 +228,20 @@ var renderAsideMile = function() {
         mileIndex++;
     }
     if (!nextAsideMile) {
-        nextMileTime = currTime + stepLength;
-        var temp = new AsideMile(DF.Miles[mileIndex], 100, 100, mileIndex);
-        temp.setAnchorPoint(1, 0);
-        temp.setPosition(-10, winHeight);
-        asideMiles[mileIndex] = temp;
-        nextAsideMile = true;
+        if (DF.Miles[mileIndex]) {
+            if (DF.Miles[mileIndex] === '100') {
+                var finish = new Monster('zhongdian', 2, winWidth * 1.2, winWidth / 3, monIndex);
+                monsters[monIndex] = finish;
+                isFinishGame = true;
+                monIndex++;
+            }
+            nextMileTime = currTime + stepLength;
+            var temp = new AsideMile(DF.Miles[mileIndex], 100, 100, mileIndex);
+            temp.setAnchorPoint(1, 0);
+            temp.setPosition(-10, winHeight);
+            asideMiles[mileIndex] = temp;
+            nextAsideMile = true;
+        }
     }
     for (var key in asideMiles) {
         asideMiles[key].update(player);

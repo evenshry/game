@@ -1,4 +1,4 @@
-var musicBg, musicGmf, musicCrash, isPlayMusic = true;
+var musicBg, musicGmf, musicCrash, isPlayMusic = false;
 var initAudio = function() {
     musicBg = document.createElement("audio");
     musicBg.loop = 'loop';
