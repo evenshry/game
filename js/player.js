@@ -222,6 +222,11 @@ var Monster = function(type, pathIndex, width, height, index) {
 Monster.prototype.update = function(target) {
     var distH = (this.getCurrentHeight()) * 0.5,
         distW = (this.getCurrentWidth()) * 0.5;
+    if (this.type === 'zhongdian') {
+        if (this.getPositionY() - target.getPositionY() < -distH / 2) {
+            FinishedGame = true;
+        }
+    }
     if (target.jumping) {
         if (this.type === DF.M.types[4]) {
             if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
@@ -307,10 +312,6 @@ Monster.prototype.crash = function() {
                 musicCrash.play();
             }
         }
-    } else {
-        setTimeout(function() {
-            FinishedGame = true;
-        }, 100);
     }
 };
 //========================================================================//
