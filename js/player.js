@@ -222,20 +222,18 @@ var Monster = function(type, pathIndex, width, height, index) {
 Monster.prototype.update = function(target) {
     var distH = (this.getCurrentHeight()) * 0.5,
         distW = (this.getCurrentWidth()) * 0.5;
-    if (this.type != 'zhongdian') {
-        if (target.jumping) {
-            if (this.type === DF.M.types[4]) {
-                if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
-                    if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
-                        this.crash();
-                    }
-                }
-            }
-        } else {
+    if (target.jumping) {
+        if (this.type === DF.M.types[4]) {
             if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
                 if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
                     this.crash();
                 }
+            }
+        }
+    } else {
+        if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
+            if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
+                this.crash();
             }
         }
     }
@@ -290,23 +288,29 @@ Monster.prototype.cutImg = function() {
 };
 //crash
 Monster.prototype.crash = function() {
-    this.alive = false;
-    delete monsters[this.index];
-    this.removeFromGlobal();
-    if (this.type === DF.M.types[0]) {
-        popupTip('gmf+1', 'fc_or');
-        gmfCounts++;
-        DF.AddTime = 1;
-        if (isPlayMusic) {
-            musicGmf.play();
+    if (this.type != 'zhongdian') {
+        this.alive = false;
+        delete monsters[this.index];
+        this.removeFromGlobal();
+        if (this.type === DF.M.types[0]) {
+            popupTip('gmf+1', 'fc_or');
+            gmfCounts++;
+            DF.AddTime = 1;
+            if (isPlayMusic) {
+                musicGmf.play();
+            }
+        } else {
+            popupTip('+' + DF.AddTime.toFixed(1) + 's');
+            DF.AddTime += 0.1;
+            startTime -= 1000 * DF.AddTime;
+            if (isPlayMusic) {
+                musicCrash.play();
+            }
         }
     } else {
-        popupTip('+' + DF.AddTime.toFixed(1) + 's');
-        DF.AddTime += 0.1;
-        startTime -= 1000 * DF.AddTime;
-        if (isPlayMusic) {
-            musicCrash.play();
-        }
+        setTimeout(function() {
+            FinishedGame = true;
+        }, 100);
     }
 };
 //========================================================================//

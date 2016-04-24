@@ -146,6 +146,7 @@ var resetStage = function() {
 
     DF.AddTime = 1;
     isFinishGame = false;
+    FinishedGame = false;
 };
 //========================================================================//
 //============================= :: MAIN :: ===============================//
@@ -166,14 +167,9 @@ window.requestAnimationFrame = window.__requestAnimationFrame ||
 var loop = function() {
     currTime = new Date().getTime();
     var runingTime = currTime - startTime;
-    var isContinue = true;
-    if (mileIndex >= 20) {
-        mileIndex = 0;
-        isContinue = false;
-    }
     document.getElementById('timer').innerText = formatMilli(runingTime);
     document.getElementById('miles').innerText = 'GMF: ' + gmfCounts;
-    if (isContinue) {
+    if (!FinishedGame) {
         shadow.update();
         player.update()
         renderMonster();
@@ -188,7 +184,8 @@ var nextMonster = false,
     monIndex = 0,
     nextMonTime = null,
     currTime = null,
-    isFinishGame = false;
+    isFinishGame = false,
+    FinishedGame = false;
 // 随机加载障碍
 var renderMonster = function() {
     if (currTime > nextMonTime && nextMonster) {
