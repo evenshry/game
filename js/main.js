@@ -209,7 +209,7 @@ var renderMonster = function() {
             // temp.setAnchorPoint(0.5, 1);
         } else {
             pathIndex = getRoundVal(1, 2);
-            temp = new Monster(DF.M.types[type], pathIndex, pathWidth / 3 * 2, pathWidth / 3 * 2, monIndex);
+            temp = new Monster(DF.M.types[type], pathIndex, pathWidth / 3 * 2, pathWidth / 3 * 2 * 1.4, monIndex);
             temp.k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
         }
         nextMonTime = currTime + randomTime;
