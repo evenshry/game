@@ -101,6 +101,7 @@ class DbService {
 
 			$this->db->update("record", [
 					"gmf_times[+]" => $gmf_times,
+					"play_times[+]" => 1, 
 					"#modify_time" => "NOW()"
 				], [
 					"uid" => $uid
@@ -129,6 +130,7 @@ class DbService {
 			$uid = $this->db->insert("record", [
 					"gmf_times"    => $gmf_times,
 					"total_time"   => $total_time,
+					"play_times"   => 1,
 					"#create_time" => "NOW()",
 					"#modify_time" => "NOW()"
 				]

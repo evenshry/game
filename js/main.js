@@ -18,7 +18,7 @@ var touchCacheX = 0.15,
 var startTime,
     refreshDelay = 24,
     gmfCounts = 0;
-var stepLength = 1000;
+var stepLength = 2000;
 // 初始化页面
 $(function() {
     loadPlayerCnt();
@@ -61,7 +61,7 @@ $(function() {
 });
 //引导页
 var firstGuide = function() {
-    //musicBg.play();
+    musicBg.play();
     $('#guide').on('touchstart', function() {
         $(this).hide();
         startGame();
@@ -143,6 +143,9 @@ var resetStage = function() {
     asideMiles = [];
     shadow = new Shadow();
     player = new Player();
+
+    DF.AddTime = 1;
+    isFinishGame = false;
 };
 //========================================================================//
 //============================= :: MAIN :: ===============================//
