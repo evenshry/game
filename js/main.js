@@ -8,17 +8,15 @@ if (!isWeixinBrowser()) {
 //========================================================================//
 //============================= :: INIT :: ===============================//
 //========================================================================//
-var canvasContainer, canvas, context;
+var canvasContainer, GameStatus = 0; //游戏状态(-1未开始，0进行中，1暂停，2碰撞，3已结束)
 var player, shadow, monsters = [],
-    asideMiles = [];
+    asideMiles = [],
+    asideCheers = [];
 var winWidth, winHeight, isGuide = false;
-var startTouchPoint;
-var touchCacheX = 0.15,
+var startTouchPoint, touchCacheX = 0.15,
     touchCacheY = 0.2;
-var startTime,
-    refreshDelay = 24,
-    gmfCounts = 0;
-var stepLength = 2000;
+var startTime, gmfCounts = 0,
+    stepLength = 2000;
 // 初始化页面
 $(function() {
     loadPlayerCnt();
@@ -98,16 +96,19 @@ var initStage = function() {
         }
         stopPropagation(e);
     });
-    if (!isGuide) {
-        firstGuide();
-        isGuide = true;
-    } else {
-        startGame();
-    }
+    // if (!isGuide) {
+    //     firstGuide();
+    //     isGuide = true;
+    // } else {
+    startGame();
+    // }
 };
 var startGame = function() {
     startTime = new Date().getTime();
     gmfCounts = 0;
+    DF.AddTime = 1;
+    noMoreMonster = false;
+    GameStatus = 0;
     requestAnimationFrame(loop, canvasContainer);
 };
 //改变窗口尺寸
@@ -140,13 +141,10 @@ var resetStage = function() {
     shadow = null;
     monsters = [];
     mileIndex = 0;
+    cheerIndex = 1;
     asideMiles = [];
     shadow = new Shadow();
     player = new Player();
-
-    DF.AddTime = 1;
-    isFinishGame = false;
-    FinishedGame = false;
 };
 //========================================================================//
 //============================= :: MAIN :: ===============================//
@@ -160,7 +158,7 @@ window.requestAnimationFrame = window.__requestAnimationFrame ||
     //
     window.msRequestAnimationFrame || (function() {
         return function(callback) {
-            window.setTimeout(callback, refreshDelay);
+            window.setTimeout(callback, 16);
         };
     })();
 // 循环
@@ -168,13 +166,16 @@ var loop = function() {
     currTime = new Date().getTime();
     var runingTime = currTime - startTime;
     document.getElementById('timer').innerText = formatMilli(runingTime);
-    document.getElementById('miles').innerText = 'GMF: ' + gmfCounts;
-    if (!FinishedGame) {
+    document.getElementById('miles').innerText = gmfCounts;
+    if (GameStatus != 3) {
         shadow.update();
-        player.update()
-        renderMonster();
-        renderAsideMile();
-        GAME.updateChildren();
+        player.update();
+        if (GameStatus != 2) {
+            renderMonster();
+            renderAsideMile();
+            renderAsideCheer();
+            GAME.updateChildren();
+        }
         requestAnimationFrame(loop);
     } else {
         finishGame(formatMilli(runingTime), gmfCounts);
@@ -184,16 +185,18 @@ var nextMonster = false,
     monIndex = 0,
     nextMonTime = null,
     currTime = null,
-    isFinishGame = false,
-    FinishedGame = false;
+    noMoreMonster = false;
 // 随机加载障碍
 var renderMonster = function() {
     if (currTime > nextMonTime && nextMonster) {
         nextMonster = false;
     }
-    if (!nextMonster && !isFinishGame) {
+    if (!nextMonster && !noMoreMonster) {
         var randomTime = getRoundVal(500, 1000);
-        var type = getRoundVal(0, DF.M.types.length - 1);
+        var type = getRoundVal(0, DF.M.types.length + 4);
+        if (type > DF.M.types.length - 1) {
+            type = 0;
+        }
         var pathIndex, pathWidth = winWidth / 3;
         if (type === 2) {
             pathIndex = getRoundVal(0, 1) === 0 ? 1 : 3;
@@ -232,7 +235,7 @@ var renderAsideMile = function() {
             if (DF.Miles[mileIndex] === '100') {
                 var finish = new Monster('zhongdian', 2, winWidth * 1.2, winWidth / 3, monIndex);
                 monsters[monIndex] = finish;
-                isFinishGame = true;
+                noMoreMonster = true;
                 monIndex++;
             }
             nextMileTime = currTime + stepLength;
@@ -244,7 +247,29 @@ var renderAsideMile = function() {
         }
     }
     for (var key in asideMiles) {
-        asideMiles[key].update(player);
+        asideMiles[key].update();
+    }
+};
+var nextAsideCheer = false,
+    cheerIndex = 1,
+    nextCheerTime = 0;
+// 顺序加载数字
+var renderAsideCheer = function() {
+    if (currTime >= nextCheerTime && nextAsideCheer) {
+        nextAsideCheer = false;
+        cheerIndex++;
+    }
+    if (!nextAsideCheer) {
+        nextCheerTime = currTime + stepLength / 4;
+        var temp = new AsideCheer(cheerIndex % 2 == 0 ? 1 : 2, 90, 160, cheerIndex);
+        temp.setAnchorPoint(1, 1);
+        var x = getRoundVal(0, 1) === 0 ? 15 : -15;
+        temp.setPosition(x, winHeight);
+        asideCheers[cheerIndex] = temp;
+        nextAsideCheer = true;
+    }
+    for (var key in asideCheers) {
+        asideCheers[key].update();
     }
 };
 //========================================================================//

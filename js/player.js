@@ -220,11 +220,11 @@ var Monster = function(type, pathIndex, width, height, index) {
 };
 //更新位置
 Monster.prototype.update = function(target) {
-    var distH = (this.getCurrentHeight()) * 0.5,
-        distW = (this.getCurrentWidth()) * 0.5;
+    var distH = this.getCurrentHeight() * 0.5,
+        distW = this.getCurrentWidth() * 0.5;
     if (this.type === 'zhongdian') {
-        if (this.getPositionY() - target.getPositionY() < -distH / 2) {
-            FinishedGame = true;
+        if (this.getPositionY() - target.first.y < distH / 4) {
+            GameStatus = 3;
         }
     }
     if (target.jumping) {
@@ -239,6 +239,15 @@ Monster.prototype.update = function(target) {
         if (this.getPositionY() - target.getPositionY() < distH && this.getPositionY() - target.getPositionY() > 0) {
             if (Math.abs(this.getPositionX() - target.getPositionX()) < distW) {
                 this.crash();
+            }
+        }
+    }
+    if (!isGuide) {
+        var guideH = this.getCurrentHeight() * 2,
+            guideW = this.getCurrentWidth();
+        if (this.getPositionY() - target.getPositionY() < guideH && this.getPositionY() - target.getPositionY() > 0) {
+            if (Math.abs(this.getPositionX() - target.getPositionX()) < guideW) {
+                // GameStatus = 1;
             }
         }
     }
@@ -298,7 +307,7 @@ Monster.prototype.crash = function() {
         delete monsters[this.index];
         this.removeFromGlobal();
         if (this.type === DF.M.types[0]) {
-            popupTip('gmf+1', 'fc_or');
+            popupTip('+1', 'fc_or');
             gmfCounts++;
             DF.AddTime = 1;
             if (isPlayMusic) {
@@ -311,6 +320,12 @@ Monster.prototype.crash = function() {
             if (isPlayMusic) {
                 musicCrash.play();
             }
+            DF.M.moveSpeed = winHeight * 0.001;
+            GameStatus = 2;
+            setTimeout(function() {
+                DF.M.moveSpeed = winHeight * 0.009;
+                GameStatus = 0;
+            }, 1000);
         }
     }
 };
@@ -334,6 +349,33 @@ AsideMile.prototype.move = function() {
     y = this.getPositionY() - DF.M.moveSpeed;
     if (winHeight - this.getPositionY() > DF.M.maxPathMile) {
         delete asideMiles[this.index];
+        this.removeFromGlobal();
+    } else {
+        var ks = DF.M.scaleMile + (this.getPositionY() - getScaleY(yl)) * (1 - DF.M.scaleMile) / getScaleY(HEIGHT - yl);
+        this.setScale(ks, ks);
+        this.setPosition(x, y);
+    }
+};
+//========================================================================//
+//======================== :: AsideMile :: ===============================//
+//========================================================================//
+// 创建
+var AsideCheer = function(type, width, height, index) {
+    GAME.Sprite.apply(this, ['jiayou' + index, 'images/jiayou_' + type + '.png', width, height, index]);
+    this.k = Math.abs((getScaleX(xA) - getScaleX(3)) / (winHeight - getScaleY(yl)));
+    this.index = index;
+};
+//更新位置
+AsideCheer.prototype.update = function(target) {
+    this.move();
+};
+//MOVE
+AsideCheer.prototype.move = function() {
+    var x, y;
+    x = this.getPositionX() + DF.M.moveSpeed / 3 * 2 * this.k;
+    y = this.getPositionY() - DF.M.moveSpeed / 3 * 2;
+    if (winHeight - this.getPositionY() > DF.M.maxPathMile) {
+        delete asideCheers[this.index];
         this.removeFromGlobal();
     } else {
         var ks = DF.M.scaleMile + (this.getPositionY() - getScaleY(yl)) * (1 - DF.M.scaleMile) / getScaleY(HEIGHT - yl);
