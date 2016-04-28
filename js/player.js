@@ -320,8 +320,11 @@ Monster.prototype.crash = function() {
             if (isPlayMusic) {
                 musicCrash.play();
             }
-            DF.M.moveSpeed = winHeight * 0.001;
+            DF.M.moveSpeed = winHeight * 0.003;
             GameStatus = 2;
+            nextMileTime += 1000;
+            nextCheerTime += 1000;
+            nextCheerTime2 += 1000;
             setTimeout(function() {
                 DF.M.moveSpeed = winHeight * 0.009;
                 GameStatus = 0;
@@ -360,9 +363,10 @@ AsideMile.prototype.move = function() {
 //======================== :: AsideMile :: ===============================//
 //========================================================================//
 // 创建
-var AsideCheer = function(type, width, height, index) {
-    GAME.Sprite.apply(this, ['jiayou' + index, 'images/jiayou_' + type + '.png', width, height, index]);
+var AsideCheer = function(type, pathIndex, width, height, index) {
+    GAME.Sprite.apply(this, ['jiayou_' + pathIndex + '_' + index, 'images/jiayou_' + type + '.png', width, height, index]);
     this.k = Math.abs((getScaleX(xA) - getScaleX(3)) / (winHeight - getScaleY(yl)));
+    this.pathIndex = pathIndex;
     this.index = index;
 };
 //更新位置
@@ -372,10 +376,21 @@ AsideCheer.prototype.update = function(target) {
 //MOVE
 AsideCheer.prototype.move = function() {
     var x, y;
-    x = this.getPositionX() + DF.M.moveSpeed / 3 * 2 * this.k;
+    switch (this.pathIndex) {
+        case 1:
+            x = this.getPositionX() + DF.M.moveSpeed / 3 * 2 * this.k;
+            break;
+        case 2:
+            x = this.getPositionX() - DF.M.moveSpeed / 3 * 2 * this.k;
+            break;
+    }
     y = this.getPositionY() - DF.M.moveSpeed / 3 * 2;
     if (winHeight - this.getPositionY() > DF.M.maxPathMile) {
-        delete asideCheers[this.index];
+        if (this.pathIndex == 1) {
+            delete asideCheers[this.index];
+        } else {
+            delete asideCheers2[this.index];
+        }
         this.removeFromGlobal();
     } else {
         var ks = DF.M.scaleMile + (this.getPositionY() - getScaleY(yl)) * (1 - DF.M.scaleMile) / getScaleY(HEIGHT - yl);

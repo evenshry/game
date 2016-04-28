@@ -11,7 +11,8 @@ if (!isWeixinBrowser()) {
 var canvasContainer, GameStatus = 0; //游戏状态(-1未开始，0进行中，1暂停，2碰撞，3已结束)
 var player, shadow, monsters = [],
     asideMiles = [],
-    asideCheers = [];
+    asideCheers = [],
+    asideCheers2 = [];
 var winWidth, winHeight, isGuide = false;
 var startTouchPoint, touchCacheX = 0.15,
     touchCacheY = 0.2;
@@ -170,10 +171,11 @@ var loop = function() {
     if (GameStatus != 3) {
         shadow.update();
         player.update();
-        if (GameStatus != 2) {
+        if (GameStatus != 1) {
             renderMonster();
             renderAsideMile();
             renderAsideCheer();
+            renderAsideCheer2();
             GAME.updateChildren();
         }
         requestAnimationFrame(loop);
@@ -261,15 +263,37 @@ var renderAsideCheer = function() {
     }
     if (!nextAsideCheer) {
         nextCheerTime = currTime + stepLength / 4;
-        var temp = new AsideCheer(cheerIndex % 2 == 0 ? 1 : 2, 90, 160, cheerIndex);
+        var temp = new AsideCheer(cheerIndex % 2 == 0 ? 1 : 2, 1, 90, 160, cheerIndex);
         temp.setAnchorPoint(1, 1);
-        var x = getRoundVal(0, 1) === 0 ? 15 : -15;
+        var x = getRoundVal(0, 1) === 0 ? 0 : -20;
         temp.setPosition(x, winHeight);
         asideCheers[cheerIndex] = temp;
         nextAsideCheer = true;
     }
     for (var key in asideCheers) {
         asideCheers[key].update();
+    }
+};
+var nextAsideCheer2 = false,
+    cheerIndex2 = 1,
+    nextCheerTime2 = 0;
+// 顺序加载数字
+var renderAsideCheer2 = function() {
+    if (currTime >= nextCheerTime2 && nextAsideCheer2) {
+        nextAsideCheer2 = false;
+        cheerIndex2++;
+    }
+    if (!nextAsideCheer2) {
+        nextCheerTime2 = currTime + stepLength / 4;
+        var temp = new AsideCheer(cheerIndex2 % 2 == 0 ? 3 : 4, 2, 90, 160, cheerIndex2);
+        temp.setAnchorPoint(0, 1);
+        var x = getRoundVal(0, 1) === 0 ? 20 : 0;
+        temp.setPosition(winWidth + x, winHeight);
+        asideCheers2[cheerIndex2] = temp;
+        nextAsideCheer2 = true;
+    }
+    for (var key in asideCheers2) {
+        asideCheers2[key].update();
     }
 };
 //========================================================================//
