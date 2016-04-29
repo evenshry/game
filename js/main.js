@@ -63,7 +63,7 @@ $(function() {
         event.preventDefault();
     }).on('touchstart', '#btnTopTen', function(event) {
         $('#activity').show();
-        $('.dialog_navbar').find('.dialog_navbar_item').eq(1).trigger('touchstart');
+        $('.dialog_navbar').find('.dialog_navbar_item').eq(1).show().trigger('touchstart');
     });
     $('.dialog_navbar').on('touchstart', '.dialog_navbar_item', function(event) {
         $(this).siblings('.dialog_navbar_item').removeClass('selected')
@@ -71,6 +71,7 @@ $(function() {
         $(this).parent().siblings('div').hide();
         $(this).parent().siblings('div').eq($(this).index()).show();
     });
+    $('.dialog_navbar').find('.dialog_navbar_item').eq(1).hide();
 });
 //引导页
 var showGuide = function(index) {
