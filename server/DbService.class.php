@@ -141,7 +141,6 @@ class DbService {
 			}
 		}
 
-
 		$results = $this->db->query(
 			"SELECT count(a.uid)+1 AS rank_id, b.total_time, b.gmf_times " .
 			"FROM record a, record b WHERE b.uid = " . $this->db->quote($uid) .
@@ -164,6 +163,18 @@ class DbService {
 		$ack["total_time"] = $results["total_time"];
 		$ack["rank_id"]    = $results["rank_id"];
 
+
+		$results = $this->db->query(
+			"select ifnull(name, '无名大侠') as name, total_time, gmf_times from record " .
+			"order by total_time, gmf_times desc, uid limit 10"
+		)->fetchAll();
+
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		$ack["top10"] = $results;
 
 		$ack["ret"] = 0;
 		return true;
@@ -202,7 +213,6 @@ class DbService {
 		$ack["ret"] = 0;
 		return true;
 	}
-
 }
 
 

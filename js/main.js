@@ -14,7 +14,7 @@ var player, shadow, monsters = [],
     asideCheers = [],
     asideCheers2 = [];
 var winWidth, winHeight, guideStatus = 0,
-    isGuide = true;
+    isGuide = false;
 var startTouchPoint, touchCacheX = 0.12,
     touchCacheY = 0.2;
 var startTime, pauseTime, gmfCounts = 0,
@@ -65,8 +65,6 @@ $(function() {
 });
 //引导页
 var showGuide = function(index) {
-    // musicBg.play();
-    console.log(index);
     var myTouch = util.toucher(document.getElementById('guide'));
     var len = winHeight > winWidth ? winWidth : winHeight;
     var isFinished = false;
@@ -252,7 +250,9 @@ var loop = function() {
         requestAnimationFrame(loop);
     } else {
         musicBg.pause();
-        musicWin.play();
+        if (isPlayMusic) {
+            musicWin.play();
+        }
         finishGame(formatMilli(runingTime), gmfCounts);
     }
 };
@@ -331,7 +331,7 @@ var renderAsideMile = function() {
     if (!nextAsideMile) {
         if (DF.Miles[mileIndex]) {
             if (DF.Miles[mileIndex] === '100') {
-                var finish = new Monster('zhongdian', 2, winWidth * 1.3, winWidth * 1.3 * 1.22, monIndex);
+                var finish = new Monster('zhongdian', 2, getScaleX(720)*1.2, getScaleY(882)*1.2, cheerIndex + 100);
                 finish.setAnchorPoint(0.5, 1);
                 monsters[monIndex] = finish;
                 noMoreMonster = true;
@@ -525,12 +525,13 @@ var finishGame = function(timeCount, gmfCount) {
                 $.fn.cookie('uid', data.uid, {
                     expires: 120
                 });
-                document.getElementById('uid').innerText = uid;
+                document.getElementById('uid').innerText = data.uid;
                 document.getElementById('timeCount').innerText = timeCount;
                 document.getElementById('gmfCount').innerText = gmfCount;
                 document.getElementById('bestTime').innerText = data.total_time;
                 document.getElementById('gmfCountAll').innerText = data.gmf_times;
                 document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
+                console.log(data.top10);
                 $('#gameAfter').show();
             }
         }
@@ -549,7 +550,7 @@ var submitInfo = function() {
         });
         return false;
     }
-    if (userName === '') {
+    if (userName === '' || userName.length > 16) {
         dialog({
             content: '请填写您的信息以便我们能联系到您！',
             mask: true,
