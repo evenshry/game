@@ -13,10 +13,10 @@ var player, shadow, monsters = [],
     asideMiles = [],
     asideCheers = [],
     asideCheers2 = [];
-var winWidth, winHeight, isGuide = false;
+var winWidth, winHeight, guideStatus = 0;
 var startTouchPoint, touchCacheX = 0.15,
     touchCacheY = 0.2;
-var startTime, gmfCounts = 0,
+var startTime, pauseTime, gmfCounts = 0,
     stepLength = 2000;
 // 初始化页面
 $(function() {
@@ -32,6 +32,7 @@ $(function() {
         $('#gameBefore').hide();
         $('#gameing').show();
         initStage();
+        musicBg.play();
         stopPropagation(event);
     });
     $('#gameBefore').on('touchstart', '.present', function(event) {
@@ -51,6 +52,9 @@ $(function() {
     $('#gameAfter').on('touchstart', '#btnReStart', function(event) {
         $('#gameAfter').hide();
         resetStage(); //重置舞台
+        if (isPlayMusic) {
+            musicBg.play();
+        }
         startGame();
         stopPropagation(event);
     }).on('touchstart', '#submitInfo', function(event) {
@@ -59,11 +63,12 @@ $(function() {
     });
 });
 //引导页
-var firstGuide = function() {
-    musicBg.play();
+var showGuide = function(index) {
+    // musicBg.play();
     $('#guide').on('touchstart', function() {
         $(this).hide();
-        startGame();
+        GameStatus = 0;
+        guideStatus = 2;
     }).show();
 };
 // 初始化舞台
@@ -122,7 +127,7 @@ var resetStage = function() {
     winHeight = $(canvasContainer).height();
     DF.M.maxPath = getScaleY(HEIGHT - yl - 25);
     DF.M.maxPathMile = getScaleY(HEIGHT - yl - 25);
-    DF.M.moveSpeed = winHeight * 0.009;
+    DF.M.moveSpeed = winHeight * 0.0068;
     DF.P.moveSpeed = winHeight * 0.006;
     var k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
     DF.P.pathWidth = DF.M.maxPath / 10 * 6 * k;
@@ -165,9 +170,15 @@ window.requestAnimationFrame = window.__requestAnimationFrame ||
 // 循环
 var loop = function() {
     currTime = new Date().getTime();
-    var runingTime = currTime - startTime;
-    document.getElementById('timer').innerText = formatMilli(runingTime);
-    document.getElementById('miles').innerText = gmfCounts;
+    if (guideStatus == 2 && pauseTime > 0) {
+        startTime += currTime - pauseTime + 100;
+        pauseTime = 0;
+    }
+    if (guideStatus != 1) {
+        var runingTime = currTime - startTime;
+        document.getElementById('timer').innerText = formatMilli(runingTime);
+        document.getElementById('miles').innerText = gmfCounts;
+    }
     if (GameStatus != 3) {
         shadow.update();
         player.update();
@@ -180,6 +191,7 @@ var loop = function() {
         }
         requestAnimationFrame(loop);
     } else {
+        musicBg.pause();
         finishGame(formatMilli(runingTime), gmfCounts);
     }
 };
@@ -195,7 +207,7 @@ var renderMonster = function() {
     }
     if (!nextMonster && !noMoreMonster) {
         var randomTime = getRoundVal(500, 1000);
-        var type = getRoundVal(0, DF.M.types.length + 4);
+        var type = getRoundVal(0, DF.M.types.length + 3);
         if (type > DF.M.types.length - 1) {
             type = 0;
         }
@@ -367,7 +379,6 @@ var popupTip = function(msg, f) {
 //========================================================================//
 //============================= :: AJAX :: ===============================//
 //========================================================================//
-//var service = 'http://ijita.me/game/';
 var service = 'server/';
 var executeAjax = function(opt) {
     $.ajax({

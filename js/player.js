@@ -10,8 +10,8 @@ var DF = {
         scale: 0.2,
         maxPathMile: 0,
         scaleMile: 0.4,
-        cutImgTimeFinal: 15,
-        cutImgTime: 15,
+        cutImgTimeFinal: 18,
+        cutImgTime: 18,
         cutImgIndex: 0
     },
     P: {
@@ -20,8 +20,8 @@ var DF = {
         jumpSpeedFinal: 5,
         jumpSpeed: 5,
         gravity: 0.25,
-        cutImgTimeFinal: 25,
-        cutImgTime: 4,
+        cutImgTimeFinal: 12,
+        cutImgTime: 12,
         cutImgIndex: 0
     },
     Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100'],
@@ -242,13 +242,16 @@ Monster.prototype.update = function(target) {
             }
         }
     }
-    if (!isGuide) {
-        var guideH = this.getCurrentHeight() * 2,
+    if (guideStatus == 0) {
+        var guideH = this.getCurrentHeight(),
             guideW = this.getCurrentWidth();
         if (this.getPositionY() - target.getPositionY() < guideH && this.getPositionY() - target.getPositionY() > 0) {
-            if (Math.abs(this.getPositionX() - target.getPositionX()) < guideW) {
-                // GameStatus = 1;
-            }
+            // if (Math.abs(this.getPositionX() - target.getPositionX()) < guideW) {
+            GameStatus = 1;
+            pauseTime = new Date().getTime();
+            showGuide(1);
+            guideStatus = 1;
+            // }
         }
     }
     this.move();
@@ -321,6 +324,7 @@ Monster.prototype.crash = function() {
                 musicCrash.play();
             }
             DF.M.moveSpeed = winHeight * 0.003;
+            DF.P.cutImgTimeFinal = 24;
             GameStatus = 2;
             nextMileTime += 1000;
             nextCheerTime += 1000;
@@ -328,7 +332,8 @@ Monster.prototype.crash = function() {
             setTimeout(function() {
                 DF.M.moveSpeed = winHeight * 0.009;
                 GameStatus = 0;
-            }, 1000);
+                DF.P.cutImgTimeFinal = 12;
+            }, 1000 * DF.AddTime);
         }
     }
 };
@@ -385,7 +390,7 @@ AsideCheer.prototype.move = function() {
             break;
     }
     y = this.getPositionY() - DF.M.moveSpeed / 3 * 2;
-    if (winHeight - this.getPositionY() > DF.M.maxPathMile) {
+    if (winHeight - this.getPositionY() > DF.M.maxPathMile-10) {
         if (this.pathIndex == 1) {
             delete asideCheers[this.index];
         } else {
@@ -393,7 +398,7 @@ AsideCheer.prototype.move = function() {
         }
         this.removeFromGlobal();
     } else {
-        var ks = DF.M.scaleMile + (this.getPositionY() - getScaleY(yl)) * (1 - DF.M.scaleMile) / getScaleY(HEIGHT - yl);
+        var ks = DF.M.scaleMile*1.5 + (this.getPositionY() - getScaleY(yl)) * (1 - DF.M.scaleMile*1.5) / getScaleY(HEIGHT - yl);
         this.setScale(ks, ks);
         this.setPosition(x, y);
     }
