@@ -56,7 +56,7 @@
                     您一共为市运会助力了 <span id="gmfCountAll"> 0 </span> 次 <br />
                 </p>
                 <div class="downBox">
-                    <a class="btn btn_m" style="display: none"> 排行榜 </a>
+                    <a class="btn btn_m" id="btnTopTen"> 排行榜 </a>
                     <a class="btn btn_m" id="btnReStart"> 再玩一次 </a>
                 </div>
             </div>
@@ -146,18 +146,18 @@
                     <div class="dialog_tab_bd">
                         <div class="m10">
                         <table>
-                            <caption>当前排名：No.1 (仅显示前100名)</caption>
+                            <caption>当前排名：No.<span id="currSort">1</span> (仅显示前10名)</caption>
                             <thead>
                                 <tr>
                                     <th>排行</th><th>昵称</th>
                                     <th>手机</th><th>成绩</th><th>助力</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
+                            <tbody id="topTenBody">
+                                <!-- <tr>
                                     <td>No.1</td><td>张三</td><td>138****1456</td>
                                     <td>50.0</td><td>50</td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                         </div>

@@ -61,6 +61,9 @@ $(function() {
     }).on('touchstart', '#submitInfo', function(event) {
         submitInfo();
         event.preventDefault();
+    }).on('touchstart', '#btnTopTen', function(event) {
+        $('#activity').show();
+        $('.dialog_navbar').find('.dialog_navbar_item').eq(1).trigger('touchstart');
     });
     $('.dialog_navbar').on('touchstart', '.dialog_navbar_item', function(event) {
         $(this).siblings('.dialog_navbar_item').removeClass('selected')
@@ -366,7 +369,7 @@ var renderAsideCheer = function() {
     }
     if (!nextAsideCheer) {
         nextCheerTime = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0?1:3) : (getRoundVal(0, 1) === 0?2:4), 1, 90, 160, cheerIndex);
+        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0 ? 1 : 3) : (getRoundVal(0, 1) === 0 ? 2 : 4), 1, 90, 160, cheerIndex);
         temp.setAnchorPoint(1, 1);
         var x = getRoundVal(0, 1) === 0 ? 0 : -20;
         temp.setPosition(x, winHeight);
@@ -388,7 +391,7 @@ var renderAsideCheer2 = function() {
     }
     if (!nextAsideCheer2) {
         nextCheerTime2 = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0?3:4) : (getRoundVal(0, 1) === 0?1:2), 2, 90, 160, cheerIndex2);
+        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0 ? 3 : 4) : (getRoundVal(0, 1) === 0 ? 1 : 2), 2, 90, 160, cheerIndex2);
         temp.setAnchorPoint(0, 1);
         var x = getRoundVal(0, 1) === 0 ? 20 : 0;
         temp.setPosition(winWidth + x, winHeight);
@@ -516,33 +519,45 @@ var loadPlayerCnt = function() {
 };
 // 游戏结束
 var finishGame = function(timeCount, gmfCount) {
-    var uid = $.fn.cookie('uid');
-    var timeTik = parseFloat(timeCount.replace('\'', '.'));
-    executeAjax({
-        url: service + 'finish.php',
-        data: {
-            total_time: timeTik,
-            gmf_times: gmfCount,
-            uid: uid
-        },
-        success: function(data) {
-            // data = data ? $.parseJSON(data) : null;
-            if (data && data.ret === 0) {
-                $.fn.cookie('uid', data.uid, {
-                    expires: 120
-                });
-                document.getElementById('uid').innerText = data.uid;
-                document.getElementById('timeCount').innerText = timeCount;
-                document.getElementById('gmfCount').innerText = gmfCount;
-                document.getElementById('bestTime').innerText = data.total_time;
-                document.getElementById('gmfCountAll').innerText = data.gmf_times;
-                document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
-                console.log(data.top10);
-                $('#gameAfter').show();
+        var uid = $.fn.cookie('uid');
+        var timeTik = parseFloat(timeCount.replace('\'', '.'));
+        executeAjax({
+            url: service + 'finish.php',
+            data: {
+                total_time: timeTik,
+                gmf_times: gmfCount,
+                uid: uid
+            },
+            success: function(data) {
+                // data = data ? $.parseJSON(data) : null;
+                if (data && data.ret === 0) {
+                    $.fn.cookie('uid', data.uid, {
+                        expires: 120
+                    });
+                    document.getElementById('uid').innerText = data.uid;
+                    document.getElementById('timeCount').innerText = timeCount;
+                    document.getElementById('gmfCount').innerText = gmfCount;
+                    document.getElementById('bestTime').innerText = data.total_time;
+                    document.getElementById('gmfCountAll').innerText = data.gmf_times;
+                    document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
+                    console.log(data.top10);
+                    var htmlContent = '',
+                        dataVal = data.top10;
+                    for (var i = 0; i < dataVal.length; i++) {
+                        var temp = dataVal[i];
+                        htmlContent += '<tr><td>No.' + (i + 1) + '</td><td>' + fmtNull(temp['name']) + '</td><td>' + fmtNull(temp['phone_no']) + '</td>\
+                                    <td>' + temp['total_time'] + '</td><td>' + temp['gmf_times'] + '</td></tr>';
+                    }
+                    $('#currSort').text(data.rank_id);
+                    $('#topTenBody').html(htmlContent);
+                    $('#gameAfter').show();
+                }
             }
-        }
-    });
-};
+        });
+    },
+    fmtNull = function(value) {
+        return value && value != undefined ? value : '暂无';
+    };
 // 提交信息
 var submitInfo = function() {
     var phone = $('#phone').val();
