@@ -13,7 +13,8 @@ var player, shadow, monsters = [],
     asideMiles = [],
     asideCheers = [],
     asideCheers2 = [];
-var winWidth, winHeight, guideStatus = 0;
+var winWidth, winHeight, guideStatus = 0,
+    isGuide = false;
 var startTouchPoint, touchCacheX = 0.15,
     touchCacheY = 0.2;
 var startTime, pauseTime, gmfCounts = 0,
@@ -65,11 +66,66 @@ $(function() {
 //引导页
 var showGuide = function(index) {
     // musicBg.play();
-    $('#guide').on('touchstart', function() {
-        $(this).hide();
-        GameStatus = 0;
-        guideStatus = 2;
-    }).show();
+    console.log(index);
+    var myTouch = util.toucher(document.getElementById('guide'));
+    var len = winHeight > winWidth ? winWidth : winHeight;
+    var isFinished = false;
+    myTouch.on('swipe', function(e) {
+        if (e.moveX >= len * touchCacheX) { //right
+            if (!player.moving && !player.jumping) {
+                player.moving = true;
+                player.moveDirect = 1;
+                shadow.moving = true;
+                shadow.moveDirect = 1;
+                isFinished = true;
+            }
+        } else if (e.moveX <= -len * touchCacheX) { //left
+            if (!player.moving && !player.jumping) {
+                player.moving = true;
+                player.moveDirect = -1;
+                shadow.moving = true;
+                shadow.moveDirect = -1;
+                isFinished = true;
+            }
+        }
+        if (e.moveY <= -len * touchCacheY) { //up
+            if (!player.jumping) {
+                player.jumping = true;
+                player.jumpDirect = 1;
+                isFinished = true;
+            }
+        }
+        if (isFinished) {
+            $('#guide').hide();
+            GameStatus = 0;
+            guideStatus = 2;
+            if ($('#guide').data('index') >= 3) {
+                nextMonTime = currTime + 1000;
+                isGuide = true;
+                guideStatus = -1;
+            } else {
+                nextMonTime = currTime + 3000;
+                setTimeout(function() {
+                    guideStatus = 0;
+                }, 3000);
+            }
+        }
+        stopPropagation(e);
+    });
+    if (index === 1) {
+        var container = $('#guide').find('.container');
+        container.addClass('guide_bg_1').find('article').text('');
+        $('#guide').show();
+    } else if (index === 2) {
+        var container = $('#guide').find('.container');
+        container.removeClass('guide_bg_1').addClass('guide_bg_2').find('article').text('');
+        $('#guide').show();
+    } else {
+        var container = $('#guide').find('.container');
+        container.removeClass('guide_bg_2').find('article').html('GIME ME FIVE！<br/>给市运会加油！<br/>开始把！');
+        $('#guide').show();
+    }
+    $('#guide').data('index', index);
 };
 // 初始化舞台
 var initStage = function() {
@@ -102,12 +158,7 @@ var initStage = function() {
         }
         stopPropagation(e);
     });
-    // if (!isGuide) {
-    //     firstGuide();
-    //     isGuide = true;
-    // } else {
     startGame();
-    // }
 };
 var startGame = function() {
     startTime = new Date().getTime();
@@ -184,9 +235,11 @@ var loop = function() {
         player.update();
         if (GameStatus != 1) {
             renderMonster();
-            renderAsideMile();
-            renderAsideCheer();
-            renderAsideCheer2();
+            if (isGuide) {
+                renderAsideMile();
+                renderAsideCheer();
+                renderAsideCheer2();
+            }
             GAME.updateChildren();
         }
         requestAnimationFrame(loop);
@@ -200,12 +253,13 @@ var nextMonster = false,
     nextMonTime = null,
     currTime = null,
     noMoreMonster = false;
+var guideSortIndex = [4, 2, 0];
 // 随机加载障碍
 var renderMonster = function() {
     if (currTime > nextMonTime && nextMonster) {
         nextMonster = false;
     }
-    if (!nextMonster && !noMoreMonster) {
+    if (!nextMonster && !noMoreMonster && isGuide) {
         var randomTime = getRoundVal(500, 1000);
         var type = getRoundVal(0, DF.M.types.length + 3);
         if (type > DF.M.types.length - 1) {
@@ -228,6 +282,28 @@ var renderMonster = function() {
         }
         nextMonTime = currTime + randomTime;
         monsters[monIndex] = temp;
+        nextMonster = true;
+        monIndex++;
+    }
+    if (!nextMonster && !noMoreMonster && !isGuide) {
+        var pathWidth = winWidth / 3,
+            type = guideSortIndex[monIndex],
+            w = pathWidth / 3 * 2,
+            h = pathWidth / 3 * 2 * 1.4;
+        if (type === 2) {
+            w = pathWidth * 2, h = pathWidth;
+            var temp = new Monster(DF.M.types[type], player.pathIndex, w, h, monIndex);
+            temp.k = Math.abs((getScaleX(xlc) - pathWidth) / (winHeight - getScaleY(yl)));
+        } else if (type === 4) {
+            w = pathWidth, h = pathWidth * 2;
+            var temp = new Monster(DF.M.types[type], 2, w, h, monIndex);
+            temp.k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
+        } else {
+            var temp = new Monster(DF.M.types[type], 2, w, h, monIndex);
+            temp.k = Math.abs((getScaleX(xl) - getScaleX(xd1)) / (winHeight - getScaleY(yl)));
+        }
+        monsters[monIndex] = temp;
+        nextMonTime = currTime + 1e6;
         nextMonster = true;
         monIndex++;
     }
@@ -267,7 +343,7 @@ var renderAsideMile = function() {
 var nextAsideCheer = false,
     cheerIndex = 1,
     nextCheerTime = 0;
-// 顺序加载数字
+// 左边啦啦队
 var renderAsideCheer = function() {
     if (currTime >= nextCheerTime && nextAsideCheer) {
         nextAsideCheer = false;
@@ -275,7 +351,7 @@ var renderAsideCheer = function() {
     }
     if (!nextAsideCheer) {
         nextCheerTime = currTime + stepLength / 4;
-        var temp = new AsideCheer(cheerIndex % 2 == 0 ? 1 : 2, 1, 90, 160, cheerIndex);
+        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? 1 : 2, 1, 90, 160, cheerIndex);
         temp.setAnchorPoint(1, 1);
         var x = getRoundVal(0, 1) === 0 ? 0 : -20;
         temp.setPosition(x, winHeight);
@@ -289,7 +365,7 @@ var renderAsideCheer = function() {
 var nextAsideCheer2 = false,
     cheerIndex2 = 1,
     nextCheerTime2 = 0;
-// 顺序加载数字
+// 右边啦啦队
 var renderAsideCheer2 = function() {
     if (currTime >= nextCheerTime2 && nextAsideCheer2) {
         nextAsideCheer2 = false;
@@ -297,7 +373,7 @@ var renderAsideCheer2 = function() {
     }
     if (!nextAsideCheer2) {
         nextCheerTime2 = currTime + stepLength / 4;
-        var temp = new AsideCheer(cheerIndex2 % 2 == 0 ? 3 : 4, 2, 90, 160, cheerIndex2);
+        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? 3 : 4, 2, 90, 160, cheerIndex2);
         temp.setAnchorPoint(0, 1);
         var x = getRoundVal(0, 1) === 0 ? 20 : 0;
         temp.setPosition(winWidth + x, winHeight);
