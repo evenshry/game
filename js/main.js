@@ -14,11 +14,11 @@ var player, shadow, monsters = [],
     asideCheers = [],
     asideCheers2 = [];
 var winWidth, winHeight, guideStatus = 0,
-    isGuide = false;
-var startTouchPoint, touchCacheX = 0.15,
+    isGuide = true;
+var startTouchPoint, touchCacheX = 0.12,
     touchCacheY = 0.2;
 var startTime, pauseTime, gmfCounts = 0,
-    stepLength = 2000;
+    stepLength = 1800;
 // 初始化页面
 $(function() {
     loadPlayerCnt();
@@ -103,6 +103,7 @@ var showGuide = function(index) {
                 nextMonTime = currTime + 1000;
                 isGuide = true;
                 guideStatus = -1;
+                startTime = new Date().getTime();
             } else {
                 nextMonTime = currTime + 3000;
                 setTimeout(function() {
@@ -122,7 +123,7 @@ var showGuide = function(index) {
         $('#guide').show();
     } else {
         var container = $('#guide').find('.container');
-        container.removeClass('guide_bg_2').find('article').html('GIME ME FIVE！<br/>给市运会加油！<br/>开始把！');
+        container.removeClass('guide_bg_2').addClass('guide_bg_1').find('article').html('GIME ME FIVE！<br/>给市运会加油！<br/>');
         $('#guide').show();
     }
     $('#guide').data('index', index);
@@ -135,25 +136,27 @@ var initStage = function() {
     var myTouch = util.toucher(document.getElementById('gameing'));
     var len = winHeight > winWidth ? winWidth : winHeight;
     myTouch.on('swipe', function(e) {
-        if (e.moveX >= len * touchCacheX) { //right
-            if (!player.moving && !player.jumping) {
-                player.moving = true;
-                player.moveDirect = 1;
-                shadow.moving = true;
-                shadow.moveDirect = 1;
+        if (isGuide) {
+            if (e.moveX >= len * touchCacheX) { //right
+                if (!player.moving && !player.jumping) {
+                    player.moving = true;
+                    player.moveDirect = 1;
+                    shadow.moving = true;
+                    shadow.moveDirect = 1;
+                }
+            } else if (e.moveX <= -len * touchCacheX) { //left
+                if (!player.moving && !player.jumping) {
+                    player.moving = true;
+                    player.moveDirect = -1;
+                    shadow.moving = true;
+                    shadow.moveDirect = -1;
+                }
             }
-        } else if (e.moveX <= -len * touchCacheX) { //left
-            if (!player.moving && !player.jumping) {
-                player.moving = true;
-                player.moveDirect = -1;
-                shadow.moving = true;
-                shadow.moveDirect = -1;
-            }
-        }
-        if (e.moveY <= -len * touchCacheY) { //up
-            if (!player.jumping) {
-                player.jumping = true;
-                player.jumpDirect = 1;
+            if (e.moveY <= -len * touchCacheY) { //up
+                if (!player.jumping) {
+                    player.jumping = true;
+                    player.jumpDirect = 1;
+                }
             }
         }
         stopPropagation(e);
@@ -197,9 +200,13 @@ var resetStage = function() {
     player = null;
     shadow = null;
     monsters = [];
+    asideMiles = [];
+    asideCheers = [];
+    asideCheers2 = []
+    mileIndex = 0;
     mileIndex = 0;
     cheerIndex = 1;
-    asideMiles = [];
+    cheerIndex2 = 1;
     shadow = new Shadow();
     player = new Player();
 };
@@ -245,6 +252,7 @@ var loop = function() {
         requestAnimationFrame(loop);
     } else {
         musicBg.pause();
+        musicWin.play();
         finishGame(formatMilli(runingTime), gmfCounts);
     }
 };
@@ -323,7 +331,8 @@ var renderAsideMile = function() {
     if (!nextAsideMile) {
         if (DF.Miles[mileIndex]) {
             if (DF.Miles[mileIndex] === '100') {
-                var finish = new Monster('zhongdian', 2, winWidth * 1.2, winWidth / 3, monIndex);
+                var finish = new Monster('zhongdian', 2, winWidth * 1.3, winWidth * 1.3 * 1.22, monIndex);
+                finish.setAnchorPoint(0.5, 1);
                 monsters[monIndex] = finish;
                 noMoreMonster = true;
                 monIndex++;
@@ -415,7 +424,7 @@ var dialog = function(options) {
     var dialog = $('#dialog');
     if (options.min) {
         dialog.css({
-            top: '10%',
+            top: '0%',
             height: '35%'
         });
     }
@@ -427,9 +436,6 @@ var dialog = function(options) {
         dialog.find('.mask').show();
     } else {
         dialog.find('.mask').hide();
-    }
-    if (!options.hasClose) {
-        dialog.css('background-image', 'url(' + options.bgImg + ')');
     }
     dialog.find('.content').html(options.content);
     dialog.show()
@@ -517,13 +523,13 @@ var finishGame = function(timeCount, gmfCount) {
             // data = data ? $.parseJSON(data) : null;
             if (data && data.ret === 0) {
                 $.fn.cookie('uid', data.uid, {
-                    expires: 7
+                    expires: 120
                 });
+                document.getElementById('uid').innerText = uid;
                 document.getElementById('timeCount').innerText = timeCount;
                 document.getElementById('gmfCount').innerText = gmfCount;
                 document.getElementById('bestTime').innerText = data.total_time;
                 document.getElementById('gmfCountAll').innerText = data.gmf_times;
-                document.getElementById('currentRank').innerText = data.rank_id;
                 document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
                 $('#gameAfter').show();
             }

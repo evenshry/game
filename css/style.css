@@ -42,10 +42,10 @@ html, body {
     position: absolute;
     right: 0px;
     top: 0px;
-    width: 100px;
-    height: 100px;
+    width: 72px;
+    height: 72px;
     z-index: 2;
-    background: url(../images/avtivity.png) no-repeat;
+    background: url(../images/avtivity.png) no-repeat top right;
 }
 
 .background .header {
@@ -108,16 +108,18 @@ audio {
 .background .scoreBox aside {
     position: absolute;
     font: bold 2em/1em 'Microsoft Yahei', Helvetica, Arial, sans-serif;
-    margin: 5%;
 }
 
 .background .scoreBox .timer {
-    right: 0px;
-    color: #ff0000;
+    top: 115%;
+    width: 15%;
+    color: #7acc5a;
+    text-align: center;
 }
 
 .background .scoreBox .miles {
     left: 0px;
+    margin: 5%;
     color: #FF8319;
     padding-left: 30px;
     height: 24px;
@@ -237,7 +239,10 @@ audio {
 .guide article {
     font: normal 2em/2em 'Microsoft Yahei', Arial, sans-serif;
     color: #fff;
+    width: 100%;
+    height: 50%;
     text-align: center;
+    margin-left: .3em;
 }
 
 .self_center {
@@ -274,7 +279,7 @@ audio {
 .gameAfter .container .resultBox {
     background: url(../images/success.png) no-repeat;
     width: 250px;
-    height: 143px;
+    height: 80px;
 }
 
 .gameAfter .container .header {

@@ -38,7 +38,7 @@
     <section class="background" id="gameing" style="display: none">
         <div class="scoreBox" id="scoreBox">
             <aside class="miles" id="miles">0m</aside>
-            <aside class="timer" id="timer">00'0"</aside>
+            <aside class="timer self_center" id="timer">00'0"</aside>
         </div>
         <div class="musicOn"></div>
     </section>
@@ -48,19 +48,12 @@
             <div class="header">
                 <div class="resultBox"></div>
                 <p>
-                    您的成绩为:
-                    <span id="timeCount"> 0 </span>
-                    <br /> 您本次为市运会加油了
-                    <span id="gmfCount"> 0 </span>
-                    次 <br /> 您的最佳成绩:
-                    <span id="bestTime"> 0 </span>
-                    <br /> 您一共为市运会加油了
-                    <span id="gmfCountAll"> 0 </span>
-                    次 <br /> 当前排名：
-                    <span id="currentRank"> 0 </span>
-                    <br /> 击败了全国
-                    <span id="currentPersent"> 0 </span>
-                    %的玩家 <br />
+                    您是第 <span id="uid"> 0 </span> 个为市运会加油的人<br/>
+                    击败了全国 <span id="currentPersent"> 0 </span> %的玩家<br/>
+                    您的成绩: <span id="timeCount"> 0 </span> <br />
+                    您的最佳成绩: <span id="bestTime"> 0 </span> <br /> 
+                    您成功为市运会助力了 <span id="gmfCount"> 0 </span> 次 <br />
+                    您一共为市运会助力了 <span id="gmfCountAll"> 0 </span> 次 <br />
                 </p>
                 <div class="downBox">
                     <a class="btn btn_m" style="display: none"> 排行榜 </a>
@@ -72,18 +65,18 @@
                     <div class="weui_cell">为了方便我们联系到您，请填写您的信息：</div>
                     <div class="weui_cell">
                         <div class="weui_cell_hd">
-                            <label class="weui_label"> 手机号 </label>
-                        </div>
-                        <div class="weui_cell_primary">
-                            <input class="weui_input" id="phone" placeholder="请输入手机号" type="number" />
-                        </div>
-                    </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_hd">
                             <label class="weui_label"> 姓名 </label>
                         </div>
                         <div class="weui_cell_primary">
                             <input class="weui_input" id="userName" placeholder="请输入姓名" type="text" />
+                        </div>
+                    </div>
+                    <div class="weui_cell">
+                        <div class="weui_cell_hd">
+                            <label class="weui_label"> 手机号 </label>
+                        </div>
+                        <div class="weui_cell_primary">
+                            <input class="weui_input" id="phone" placeholder="请输入手机号" type="number" />
                         </div>
                     </div>
                     <a class="btn btn_l" id="submitInfo"> 提交 </a>
@@ -129,27 +122,22 @@
                         <div class="dialog_navbar_item">活动说明</div>
                     </div>
                     <div class="dialog_tab_bd">
-                        <h3>活动奖品</h3>
-                        <p>
-                            一等奖：市运会特色礼品<br /> 二等奖：市运会特色礼品<br /> 三等奖：市运会特色礼品<br />
+                        <h3>抽奖规则</h3>
+                        <p> ① 所有参与者都可以随机抽奖，抽奖奖品为“蓉欧班列商品”，如：波兰曲奇饼干、果肉果汁礼盒。
+                            <br /> ② 第1000、2000、以此类推的参与者，将获得“蓉欧班列大礼包”。
+                        </p>
+                        <h3>领取地点</h3>
+                        <p> ① 成都市锦江区书院西街1号亚太大厦7楼。<br />
+                            ② 成都市青白江区文化体育中心。
+                        </p>
+                        <h3>领取方式</h3>
+                        <p> 游戏结束后，以提交的姓名及电话为领取凭证。
                         </p>
                         <h3>活动时间</h3>
                         <p>
-                            2016年4月8日 9:00 - 2016年4月15日 18:00<br />
+                            2016年5月1日 - 2016年9月1日<br />
                         </p>
                         <h3>主办单位</h3>
-                        <p>
-                            本次活动主办单位为
-                            <a href="#">成都商报营销策划有限公司</a>
-                            <br /> 主办单位在法律允许范围内拥有活动解释权<br />
-                        </p>
-                        <h3>技术支持</h3>
-                        <p>
-                            本次活动主办单位为
-                            <a href="#">成都商报营销策划有限公司</a>
-                            <br /> 主办单位在法律允许范围内拥有活动解释权<br />
-                        </p>
-                        <h3>活动以及兑奖说明</h3>
                         <p>
                             本次活动主办单位为
                             <a href="#">成都商报营销策划有限公司</a>
