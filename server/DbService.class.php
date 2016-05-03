@@ -142,7 +142,7 @@ class DbService {
 		}
 
 		$results = $this->db->query(
-			"SELECT count(a.uid)+1 AS rank_id, b.total_time, b.gmf_times " .
+			"SELECT count(a.uid)+1 AS rank_id, b.total_time, b.gmf_times, b.gift, b.win " .
 			"FROM record a, record b WHERE b.uid = " . $this->db->quote($uid) .
 			" AND a.total_time < b.total_time;"
 		)->fetchAll();
@@ -162,7 +162,44 @@ class DbService {
 		$ack["gmf_times"]  = $results["gmf_times"];
 		$ack["total_time"] = $results["total_time"];
 		$ack["rank_id"]    = $results["rank_id"];
+		$ack["gift"]       = $results["gift"];
+		$ack["win"]        = $results["win"];
 
+		$ack["ret"] = 0;
+		return true;
+	}
+
+	/**
+	 * top10
+	 * @param  array $qry
+	 * @param  ref array $ack
+	 * @return boolean
+	 */
+	public function top10($qry, &$ack) {
+		if (!array_key_exists("uid", $qry)) {
+			$ack["ret"] = 1;
+			return false;
+		}
+		$uid = $qry["uid"];
+
+		$cnt = $this->db->count("record", [
+				"phone_no"
+			], [
+				"and" => [
+					"uid" => $uid,
+					"phone_no[!]" => NULL
+				]
+			]
+		);
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		if ($cnt != 1) {
+			$ack["ret"] = 3;
+			return false;
+		}
 
 		$results = $this->db->query(
 			"select ifnull(name, '无名大侠') as name, concat(left(phone_no,3),'*****',right(phone_no,3)) phone_no, " .
@@ -179,6 +216,7 @@ class DbService {
 		$ack["ret"] = 0;
 		return true;
 	}
+
 
 	/**
 	 * 填写个人信息
@@ -197,6 +235,23 @@ class DbService {
 		$phone_no = $qry["phone_no"];
 		$name     = $qry["name"];
 
+		//判断电话号码是否唯一
+		$results = $this->db->select("record", [
+				"phone_no"
+			], [
+				"phone_no" => $phone_no
+			]
+		);
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		if (count($results) > 0) {
+			$ack["ret"] = 3;
+			return false;
+		}
+
 		$this->db->update("record", [
 				"phone_no" => $phone_no,
 				"name" => $name,
@@ -209,6 +264,66 @@ class DbService {
 			$ack["ret"] = 2;
 			return false;
 		}
+
+		$ack["ret"] = 0;
+		return true;
+	}
+
+
+	/**
+	 * 抽奖
+	 * @param  array $qry
+	 * @param  ref array $ack
+	 * @return boolean
+	 */
+	public function gift($qry, &$ack) {
+		if (!array_key_exists("uid", $qry)) {
+			$ack["ret"] = 1;
+			return false;
+		}
+		$uid = $qry["uid"];
+
+		$cnt = $this->db->count("record", [
+				"uid"
+			], [
+				"AND" => [
+					"uid" => $uid,
+					"gift" => 1
+				]
+			]
+		);
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		if ($cnt == 1) {
+			$ack["ret"] = 3;
+			return false;
+		}
+
+		$r = rand(0, 100);
+		$win = 0;
+		if ($r <= 20) {
+			$win = 1;
+		}
+
+		$this->db->update("record", [
+				"gift" => 1,
+				"win" => $win,
+				"#modify_time" => "NOW()"
+			], [
+				"uid" => $uid
+			]
+		);
+
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		$ack["gift"] = 1;
+		$ack["win"] = $win;
 
 		$ack["ret"] = 0;
 		return true;
