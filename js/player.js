@@ -336,12 +336,12 @@ Monster.prototype.crash = function() {
                 GameStatus = 0;
                 DF.P.cutImgTimeFinal = 12;
             }, 1000 * DF.AddTime);
-            dialog({
-                content: DF.MatchInfo[this.type],
-                min: true,
-                mask: true,
-                delay: 2000
-            });
+            // dialog({
+            //     content: DF.MatchInfo[this.type],
+            //     min: true,
+            //     mask: true,
+            //     delay: 2000
+            // });
         }
     }
 };

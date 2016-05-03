@@ -3,7 +3,7 @@ var isWeixinBrowser = function() {
     return (/micromessenger/.test(ua)) ? true : false;
 }
 if (!isWeixinBrowser()) {
-    // $('body').html('Give Me Five!');
+    // $('body').html('Give me five!');
 }
 //========================================================================//
 //============================= :: INIT :: ===============================//
@@ -113,10 +113,10 @@ var showGuide = function(index) {
                 guideStatus = -1;
                 startTime = new Date().getTime();
             } else {
-                nextMonTime = currTime + 3000;
+                nextMonTime = currTime + 1200;
                 setTimeout(function() {
                     guideStatus = 0;
-                }, 3000);
+                }, 1200);
             }
         }
         stopPropagation(e);
@@ -538,7 +538,7 @@ var finishGame = function(timeCount, gmfCount) {
                     document.getElementById('uid').innerText = data.uid;
                     document.getElementById('timeCount').innerText = timeCount;
                     document.getElementById('gmfCount').innerText = gmfCount;
-                    document.getElementById('bestTime').innerText = data.total_time;
+                    document.getElementById('bestTime').innerText = formatMilli(data.total_time*1000);
                     document.getElementById('gmfCountAll').innerText = data.gmf_times;
                     document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
                     console.log(data.top10);
