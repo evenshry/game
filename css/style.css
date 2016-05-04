@@ -425,8 +425,8 @@ audio {
     top: 0px;
     right: 0px;
     float: right;
-    font: normal 2em/1em Arial, sans-serif;
-    margin: 4%;
+    font: normal 1.5em/1em Arial, sans-serif;
+    margin: 1%;
     color: #fff;
     z-index: 2;
 }

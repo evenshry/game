@@ -24,7 +24,6 @@ class DbService {
 			'database_type' => 'mysql',
 			'database_name' => 'game_12306',
 			 'server'        => 'localhost',
-			// 'server'      => '119.29.93.166',
 			'username'      => 'root',
 			// 'password'      => 'tydic2016',
 			'password'    => 'ZQH4996197!=',
@@ -325,6 +324,38 @@ class DbService {
 		$ack["gift"] = 1;
 		$ack["win"] = $win;
 
+		$ack["ret"] = 0;
+		return true;
+	}
+
+
+
+	/**
+	 * 获奖情况
+	 * @param  array $qry
+	 * @param  ref array $ack
+	 * @return boolean
+	 */
+	public function win($qry, &$ack) {
+		if (!array_key_exists("uid", $qry)) {
+			$ack["ret"] = 1;
+			return false;
+		}
+		$uid = $qry["uid"];
+
+		$results = $this->db->select("record", [
+				"win"
+			], [
+				"uid" => $uid
+			]
+		);
+
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+
+		$ack["win"] = $results[0]['win'];
 		$ack["ret"] = 0;
 		return true;
 	}
