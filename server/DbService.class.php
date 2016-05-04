@@ -202,7 +202,7 @@ class DbService {
 		}
 
 		$results = $this->db->query(
-			"select ifnull(name, '无名大侠') as name, concat(left(phone_no,3),'*****',right(phone_no,3)) phone_no, " .
+			"select if(name is null, '无名大侠', concat(left(name,1),'*')) as name, concat(left(phone_no,3),'*****',right(phone_no,3)) phone_no, " .
 			"total_time, gmf_times from record order by total_time, gmf_times desc, uid limit 10"
 		)->fetchAll();
 

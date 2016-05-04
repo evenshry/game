@@ -530,6 +530,7 @@ var loadPlayerCnt = function() {
 };
 // 游戏结束
 var finishGame = function(timeCount, gmfCount) {
+<<<<<<< HEAD
         var uid = $.fn.cookie('uid');
         var timeTik = parseFloat(timeCount.replace('\'', '.'));
         executeAjax({
@@ -679,3 +680,152 @@ var submitInfo = function() {
             $('#inputBox').data('todo', 2).show();
         }
     };
+=======
+	var uid = $.fn.cookie('uid');
+	var timeTik = parseFloat(timeCount.replace('\'', '.'));
+	executeAjax({
+	    url : service + 'finish.php',
+	    data : {
+	        total_time : timeTik,
+	        gmf_times : gmfCount,
+	        uid : uid
+	    },
+	    success : function(data) {
+		    if (data && data.ret === 0) {
+			    $.fn.cookie('uid', data.uid, {
+				    expires : 120
+			    });
+			    document.getElementById('uid').innerText = data.uid;
+			    document.getElementById('timeCount').innerText = timeCount;
+			    document.getElementById('gmfCount').innerText = gmfCount;
+			    document.getElementById('bestTime').innerText = formatMilli(data.total_time * 1000);
+			    document.getElementById('gmfCountAll').innerText = data.gmf_times;
+			    document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
+			    $('#currSort').text(data.rank_id);
+			    $('#gameAfter').show();
+		    }
+	    }
+	});
+}, loadGamerTop10 = function() {
+	var uid = $.fn.cookie('uid');
+	var uPhone = $.fn.cookie('uPhone');
+	if (uPhone != null) {
+		$('.dialog_navbar').find('.dialog_navbar_item').eq(1).show().trigger('touchstart');
+		executeAjax({
+		    url : service + 'top10.php',
+		    data : {
+			    uid : uid
+		    },
+		    success : function(data) {
+			    if (data && data.ret === 0) {
+				    var htmlContent = '', dataVal = data.top10;
+				    for (var i = 0; i < dataVal.length; i++) {
+					    var temp = dataVal[i];
+					    htmlContent += '<tr><td>No.' + (i + 1) + '</td><td>' + fmtNull(temp['name']) + '</td><td>'
+					        + fmtNull(temp['phone_no']) + '</td>\
+	                                    <td>'
+					        + temp['total_time'] + '</td><td>' + temp['gmf_times'] + '</td></tr>';
+				    }
+				    $('#topTenBody').html(htmlContent);
+				    $('#activity').show();
+			    }
+		    }
+		});
+	} else {
+		// 设置后续动作为 1 排行榜
+		$('#inputBox').data('todo', 1).show();
+	}
+}, fmtNull = function(value) {
+	return value && value != undefined ? value : '暂无';
+};
+// 提交信息
+var submitInfo = function() {
+	var phone = $('#phone').val();
+	var userName = $('#userName').val();
+	if (phone === '' || phone.length != 11) {
+		dialog({
+		    content : '请填写您的信息以便我们能联系到您！',
+		    mask : true,
+		    min : true,
+		    delay : 2000
+		});
+		return false;
+	}
+	if (userName === '' || userName.length > 16) {
+		dialog({
+		    content : '请填写您的信息以便我们能联系到您！',
+		    mask : true,
+		    min : true,
+		    delay : 2000
+		});
+		return false;
+	}
+	var uid = $.fn.cookie('uid');
+	executeAjax({
+	    url : service + 'info.php',
+	    data : {
+	        uid : uid,
+	        phone_no : phone,
+	        name : userName
+	    },
+	    success : function(data) {
+		    if (data && data.ret === 0) {
+			    dialog({
+			        content : '提交成功！',
+			        mask : true,
+			        min : true,
+			        delay : 2000
+			    });
+			    $.fn.cookie('uPhone', phone, {
+				    expires : 120
+			    });
+			    // 后续动作
+			    var todo = $('#inputBox').data('todo');
+			    if (todo && todo == 1) {
+				    loadGamerTop10();
+			    } else if (todo && todo == 2) {
+				    loadGamerRaffle();
+			    }
+		    }
+	    }
+	});
+}, loadGamerRaffle = function() {
+	var uPhone = $.fn.cookie('uPhone');
+	if (uPhone != null) {
+		var uid = $.fn.cookie('uid');
+		executeAjax({
+		    url : service + 'gift.php',
+		    data : {
+			    uid : uid
+		    },
+		    success : function(data) {
+			    if (data && data.ret === 0) {
+				    if (data.win === 1) {
+					    dialog({
+					        content : '恭喜您中奖啦！请到兑奖说明中查看详情！',
+					        mask : true,
+					        min : true,
+					        delay : 5000
+					    });
+				    } else {
+					    dialog({
+					        content : '很遗憾，您没有抽到奖！',
+					        mask : true,
+					        min : true,
+					        delay : 5000
+					    });
+				    }
+			    }
+			    $.fn.cookie('hasRaffle', 1, {
+				    expires : 120
+			    });
+			    $('#btnRaffle').hide();
+			    $('#inputBox').data('todo', 0).hide();
+		    }
+		});
+	} else {
+		// 设置后续动作为 2 抽奖
+		$('#inputBox').data('todo', 2).show();
+	}
+};
+>>>>>>> refs/remotes/origin/master
