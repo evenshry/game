@@ -661,7 +661,6 @@ var submitInfo = function() {
                                 min: true,
                                 delay: 5000
                             });
-                            $('#giftImage').find('img').attr('src', 'images/jiayou_4.png');
                         } else {
                             dialog({
                                 content: '很遗憾，您没有抽到奖！',
@@ -669,8 +668,8 @@ var submitInfo = function() {
                                 min: true,
                                 delay: 5000
                             });
-                            $('#giftImage').find('img').attr('src', 'images/jiayou_2.png');
                         }
+                        setGiftImage(data.win === 1);
                     }
                     $.fn.cookie('hasRaffle', 1, {
                         expires: 120
@@ -694,15 +693,21 @@ var submitInfo = function() {
                 },
                 success: function(data) {
                     if (data && data.ret === 0) {
-                        if (data.win === 1) {
-                            $('#giftImage').find('img').attr('src', 'images/jiayou_4.png');
-                        } else {
-                            $('#giftImage').find('img').attr('src', 'images/jiayou_2.png');
-                        }
+                        setGiftImage(data.win === 1);
                     }
                 }
             });
         } else {
-            $('#giftImage').find('img').attr('src', 'images/jiayou_2.png');
+            setGiftImage(false);
+        }
+    },
+    setGiftImage = function(win) {
+        var image = $('#giftImage').find('img');
+        if (win) {
+            image.before('恭喜您中奖啦！');
+            image.attr('src', 'images/jiayou_2.png');
+        } else {
+            image.before('暂无奖品！');
+            image.attr('src', 'images/jiayou_1.png');
         }
     };

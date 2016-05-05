@@ -523,6 +523,14 @@ audio {
     margin: 10px;
 }
 
+#giftImage {
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 3em;
+    width: 300px;
+    height: 350px;
+}
+
 
 /***************** loadingBox *********************/
 
