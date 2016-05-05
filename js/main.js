@@ -84,7 +84,8 @@ var showGuide = function(index) {
     var len = winHeight > winWidth ? winWidth : winHeight;
     var isFinished = false;
     myTouch.on('swipe', function(e) {
-        if (e.moveX >= len * touchCacheX) { // right
+        var guideIndex = $('#guide').data('index');
+        if (e.moveX >= len * touchCacheX && guideIndex != 2) { // right
             if (!player.moving && !player.jumping) {
                 player.moving = true;
                 player.moveDirect = 1;
@@ -92,7 +93,7 @@ var showGuide = function(index) {
                 shadow.moveDirect = 1;
                 isFinished = true;
             }
-        } else if (e.moveX <= -len * touchCacheX) { // left
+        } else if (e.moveX <= -len * touchCacheX && guideIndex != 2) { // left
             if (!player.moving && !player.jumping) {
                 player.moving = true;
                 player.moveDirect = -1;
@@ -101,7 +102,7 @@ var showGuide = function(index) {
                 isFinished = true;
             }
         }
-        if (e.moveY <= -len * touchCacheY) { // up
+        if (e.moveY <= -len * touchCacheY && guideIndex == 2) { // up
             if (!player.jumping) {
                 player.jumping = true;
                 player.jumpDirect = 1;
@@ -112,7 +113,7 @@ var showGuide = function(index) {
             $('#guide').hide();
             GameStatus = 0;
             guideStatus = 2;
-            if ($('#guide').data('index') >= 3) {
+            if (guideIndex >= 3) {
                 nextMonTime = currTime + 1000;
                 isGuide = true;
                 guideStatus = -1;
@@ -126,6 +127,7 @@ var showGuide = function(index) {
                     guideStatus = 0;
                 }, 1200);
             }
+            isFinished = false;
         }
         stopPropagation(e);
     });
@@ -378,7 +380,7 @@ var renderAsideCheer = function() {
     }
     if (!nextAsideCheer) {
         nextCheerTime = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0 ? 1 : 3) : (getRoundVal(0, 1) === 0 ? 2 : 4), 1, 90, 160, cheerIndex);
+        var temp = new AsideCheer(getRoundVal(1, 2), 1, 90, 160, cheerIndex);
         temp.setAnchorPoint(1, 1);
         var x = getRoundVal(0, 1) === 0 ? 0 : -20;
         temp.setPosition(x, winHeight);
@@ -400,7 +402,7 @@ var renderAsideCheer2 = function() {
     }
     if (!nextAsideCheer2) {
         nextCheerTime2 = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(0, 1) === 0 ? (getRoundVal(0, 1) === 0 ? 3 : 4) : (getRoundVal(0, 1) === 0 ? 1 : 2), 2, 90, 160, cheerIndex2);
+        var temp = new AsideCheer(getRoundVal(4, 2), 2, 100, 120, cheerIndex2);
         temp.setAnchorPoint(0, 1);
         var x = getRoundVal(0, 1) === 0 ? 20 : 0;
         temp.setPosition(winWidth + x, winHeight);
