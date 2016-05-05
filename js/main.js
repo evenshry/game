@@ -76,6 +76,7 @@ $(function() {
         $(this).parent().siblings('div').eq($(this).index()).show();
     });
     $('.dialog_navbar').find('.dialog_navbar_item').eq(1).hide();
+    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).hide();
     isGuide = $.fn.cookie('isGuide');
 });
 // 引导页
@@ -547,6 +548,9 @@ var finishGame = function(timeCount, gmfCount) {
                     $.fn.cookie('uid', data.uid, {
                         expires: 120
                     });
+                    $.fn.cookie('hasRaffle', data.gift, {
+                        expires: 120
+                    });
                     document.getElementById('uid').innerText = data.uid;
                     document.getElementById('timeCount').innerText = timeCount;
                     document.getElementById('gmfCount').innerText = gmfCount;
@@ -555,6 +559,10 @@ var finishGame = function(timeCount, gmfCount) {
                     document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
                     $('#currSort').text(data.rank_id);
                     $('#gameAfter').show();
+                    var hasRaffle = $.fn.cookie('hasRaffle');
+                    if (hasRaffle != null && hasRaffle == 1) {
+                        $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
+                    }
                 }
             }
         });
@@ -676,6 +684,7 @@ var submitInfo = function() {
                     });
                     $('#btnRaffle').hide();
                     $('#inputBox').data('todo', 0).hide();
+                    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show();
                 }
             });
         } else {
