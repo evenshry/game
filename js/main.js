@@ -76,7 +76,15 @@ $(function() {
         $(this).parent().siblings('div').eq($(this).index()).show();
     });
     $('.dialog_navbar').find('.dialog_navbar_item').eq(1).hide();
-    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).hide();
+
+    var hasRaffle = $.fn.cookie('hasRaffle');
+    if (hasRaffle != null && hasRaffle == 1) {
+        $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
+        $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show();
+    } else {
+        $('.dialog_navbar').find('.dialog_navbar_item').eq(2).hide();
+    }
+
     isGuide = $.fn.cookie('isGuide');
 });
 // 引导页
@@ -381,7 +389,7 @@ var renderAsideCheer = function() {
     }
     if (!nextAsideCheer) {
         nextCheerTime = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(1, 2), 1, 90, 160, cheerIndex);
+        var temp = new AsideCheer(getRoundVal(1, 2), 1, 90, 140, cheerIndex);
         temp.setAnchorPoint(1, 1);
         var x = getRoundVal(0, 1) === 0 ? 0 : -20;
         temp.setPosition(x, winHeight);
@@ -403,7 +411,7 @@ var renderAsideCheer2 = function() {
     }
     if (!nextAsideCheer2) {
         nextCheerTime2 = currTime + stepLength / 4;
-        var temp = new AsideCheer(getRoundVal(4, 2), 2, 100, 120, cheerIndex2);
+        var temp = new AsideCheer(getRoundVal(4, 2), 2, 90, 140, cheerIndex2);
         temp.setAnchorPoint(0, 1);
         var x = getRoundVal(0, 1) === 0 ? 20 : 0;
         temp.setPosition(winWidth + x, winHeight);
@@ -527,9 +535,11 @@ var loadPlayerCnt = function() {
         }
     });
     loadGamerGift();
+
     var hasRaffle = $.fn.cookie('hasRaffle');
     if (hasRaffle != null && hasRaffle == 1) {
         $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
+        $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show();
     }
 };
 // 游戏结束
@@ -562,6 +572,8 @@ var finishGame = function(timeCount, gmfCount) {
                     var hasRaffle = $.fn.cookie('hasRaffle');
                     if (hasRaffle != null && hasRaffle == 1) {
                         $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
+                    } else {
+                    	$('#btnRaffle').show();
                     }
                 }
             }
@@ -702,7 +714,7 @@ var submitInfo = function() {
                 },
                 success: function(data) {
                     if (data && data.ret === 0) {
-                        setGiftImage(data.win === 1);
+                        setGiftImage(data.win == 1);
                     }
                 }
             });
@@ -716,7 +728,7 @@ var submitInfo = function() {
             image.before('恭喜您中奖啦！');
             image.attr('src', 'images/jiayou_2.png');
         } else {
-            image.before('暂无奖品！');
+            image.before('未抽中奖励哦！');
             image.attr('src', 'images/jiayou_1.png');
         }
     };

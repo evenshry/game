@@ -26,9 +26,9 @@ var DF = {
     Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100'],
     AddTime: 1,
     MatchInfo: {
-        zuqiu:   '足球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
-        lanqiu:  '篮球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
-        langan:  '跨栏赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
+        zuqiu: '足球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
+        lanqiu: '篮球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
+        langan: '跨栏赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
         feibiao: '飞镖赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00'
     }
 };
@@ -377,7 +377,7 @@ AsideMile.prototype.move = function() {
 //========================================================================//
 // 创建
 var AsideCheer = function(type, pathIndex, width, height, index) {
-    GAME.Sprite.apply(this, ['jiayou_' + pathIndex + '_' + index, 'images/jiayou_' + type + '.png', width, height, index]);
+    GAME.Sprite.apply(this, ['jiayou_' + type + '_' + index, 'images/jiayou_' + type + '.png', width, height, index]);
     this.k = Math.abs((getScaleX(xA) - getScaleX(3)) / (winHeight - getScaleY(yl)));
     this.pathIndex = pathIndex;
     this.index = index;
