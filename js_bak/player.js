@@ -24,13 +24,7 @@ var DF = {
         cutImgIndex: 0
     },
     Miles: ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100'],
-    AddTime: 1,
-    MatchInfo: {
-        zuqiu: '足球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
-        lanqiu: '篮球赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
-        langan: '跨栏赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00',
-        feibiao: '飞镖赛： 双流队 vs 青羊队 比赛时间： 2016年9月1日  16:00'
-    }
+    AddTime: 1
 };
 //========================================================================//
 //======================== :: Player :: ==================================//
@@ -312,7 +306,7 @@ Monster.prototype.crash = function() {
         delete monsters[this.index];
         this.removeFromGlobal();
         if (this.type === DF.M.types[0]) {
-            popupTip('+1', 'fc_or');
+            popupTip('Give me five +1', 'fc_or');
             gmfCounts++;
             DF.AddTime = 1;
             if (isPlayMusic) {

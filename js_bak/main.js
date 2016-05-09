@@ -41,7 +41,9 @@ $(function() {
         stopPropagation(event);
     });
     $('body').on('touchstart touchmove', function(event) {
-        event.preventDefault();
+        if ($(event.target).closest('#activity').length > 0) {} else {
+            event.preventDefault();
+        }
     });
     $('input').on('touchstart', function(event) {
         $(this).focus();
@@ -75,15 +77,12 @@ $(function() {
         $(this).parent().siblings('div').hide();
         $(this).parent().siblings('div').eq($(this).index()).show();
     });
-
-
     var uPhone = $.fn.cookie('uPhone');
     if (uPhone != null) {
         $('.dialog_navbar').find('.dialog_navbar_item').eq(1).show();
     } else {
         $('.dialog_navbar').find('.dialog_navbar_item').eq(1).hide();
     }
-
     var hasRaffle = $.fn.cookie('hasRaffle');
     if (hasRaffle != null && hasRaffle == 1) {
         $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
@@ -92,7 +91,6 @@ $(function() {
         $('#btnRaffle').show(); // 如果抽过奖即隐藏抽奖按钮
         $('.dialog_navbar').find('.dialog_navbar_item').eq(2).hide();
     }
-
     isGuide = $.fn.cookie('isGuide');
 });
 // 引导页
@@ -543,7 +541,6 @@ var loadPlayerCnt = function() {
         }
     });
     loadGamerGift();
-
     loadGamerTop10(false);
 };
 // 游戏结束
@@ -577,7 +574,7 @@ var finishGame = function(timeCount, gmfCount) {
                     if (hasRaffle != null && hasRaffle == 1) {
                         $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
                     } else {
-                    	$('#btnRaffle').show();
+                        $('#btnRaffle').show();
                     }
                 }
             }
@@ -627,23 +624,17 @@ var finishGame = function(timeCount, gmfCount) {
 var submitInfo = function() {
         var phone = $('#phone').val();
         var userName = $('#userName').val();
-        if (phone === '' || phone.length != 11) {
-            dialog({
-                content: '请填写您的信息以便我们能联系到您！',
-                mask: true,
-                min: true,
-                delay: 2000
-            });
-            return false;
-        }
         if (userName === '' || userName.length > 16) {
-            dialog({
-                content: '请填写您的信息以便我们能联系到您！',
-                mask: true,
-                min: true,
-                delay: 2000
-            });
+            $('#userName').parent().addClass('bd_rd');
             return false;
+        } else {
+            $('#userName').parent().removeClass('bd_rd');
+        }
+        if (phone === '' || phone.length != 11) {
+            $('#phone').parent().addClass('bd_rd');
+            return false;
+        } else {
+            $('#phone').parent().removeClass('bd_rd');
         }
         var uid = $.fn.cookie('uid');
         executeAjax({
@@ -655,12 +646,6 @@ var submitInfo = function() {
             },
             success: function(data) {
                 if (data && data.ret === 0) {
-                    dialog({
-                        content: '提交成功！',
-                        mask: true,
-                        min: true,
-                        delay: 2000
-                    });
                     $.fn.cookie('uPhone', phone, {
                         expires: 120
                     });
@@ -671,6 +656,13 @@ var submitInfo = function() {
                     } else if (todo && todo == 2) {
                         loadGamerRaffle();
                     }
+                } else {
+                    dialog({
+                        content: '提交失败！请重试',
+                        mask: true,
+                        min: true,
+                        delay: 5000
+                    });
                 }
             }
         });
@@ -686,21 +678,6 @@ var submitInfo = function() {
                 },
                 success: function(data) {
                     if (data && data.ret === 0) {
-                        if (data.win === 1) {
-                            dialog({
-                                content: '恭喜您中奖啦！请到兑奖说明中查看详情！',
-                                mask: true,
-                                min: true,
-                                delay: 5000
-                            });
-                        } else {
-                            dialog({
-                                content: '很遗憾，您没有抽到奖！',
-                                mask: true,
-                                min: true,
-                                delay: 5000
-                            });
-                        }
                         setGiftImage(data.win === 1);
                     }
                     $.fn.cookie('hasRaffle', 1, {
@@ -708,7 +685,8 @@ var submitInfo = function() {
                     });
                     $('#btnRaffle').hide();
                     $('#inputBox').data('todo', 0).hide();
-                    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show();
+                    $('#activity').show();
+                    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show().trigger('touchstart');
                 }
             });
         } else {
@@ -736,11 +714,12 @@ var submitInfo = function() {
     },
     setGiftImage = function(win) {
         var image = $('#giftImage').find('img');
+        var text = $('#giftImage').find('h4');
         if (win) {
-            // image.before('恭喜您中奖啦！');
+            text.text('联系主办方领取奖品具体参见活动说明');
             image.attr('src', 'images/zhongjiang_a.jpg');
         } else {
-            // image.before('未抽中奖励哦！');
             image.attr('src', 'images/zhongjiang_b.jpg');
+            text.text('');
         }
     };
