@@ -51,10 +51,8 @@ class DbService {
 		if (empty($error[2])) {
 			return false;
 		} else {
-			// if (DEBUG_MODE) {
-				var_dump($this->db->last_query());
-				var_dump($this->db->error());
-			// }
+			var_dump($this->db->last_query());
+			var_dump($this->db->error());
 			return true;
 		}
 	}
@@ -211,6 +209,22 @@ class DbService {
 		}
 
 		$ack["top10"] = $results;
+
+		$results = $this->db->query(
+			"SELECT count(a.uid)+1 AS rank_id, b.total_time, b.gmf_times, b.gift, b.win " .
+			"FROM record a, record b WHERE b.uid = " . $this->db->quote($uid) .
+			" AND a.total_time < b.total_time;"
+		)->fetchAll();
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+		$results = $results[0];
+		$ack["gmf_times"]  = $results["gmf_times"];
+		$ack["total_time"] = $results["total_time"];
+		$ack["rank_id"]    = $results["rank_id"];
+		$ack["gift"]       = $results["gift"];
+		$ack["win"]        = $results["win"];
 
 		$ack["ret"] = 0;
 		return true;

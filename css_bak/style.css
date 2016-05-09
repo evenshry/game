@@ -1,0 +1,604 @@
+@CHARSET "UTF-8";
+
+/**
+ * @Filename : style.css
+ * @Author : shiyuan
+ * @Finished ：2016年4月8日
+ * @Modified By ：shiyuan
+ * @Modified Date : 2016年4月8日
+ * @Modified Reasons :
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    font: 12px/1.5em 'Microsoft Yahei', Helvetica, Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+
+
+/*======================::background::=======================*/
+
+.background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: url(../images/bg.jpg) no-repeat;
+    background-size: 100% 100%;
+    overflow: hidden;
+}
+
+.background .present {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 72px;
+    height: 72px;
+    z-index: 2;
+    background: url(../images/avtivity.png) no-repeat top right;
+}
+
+.background .header {
+    position: relative;
+    height: 65%;
+    z-index: -2;
+    background: url(../images/header.png) no-repeat center 15%;
+}
+
+.background .header .player {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    width: 120px;
+    height: 163px;
+    z-index: -1;
+}
+
+.background .downBox {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 30%;
+    text-align: center;
+}
+
+.background .downBox .countInfo {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+    font-size: 1.4em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.background .downBox .countInfo span {
+    color: #FE8208;
+    font-size: 1.4em;
+}
+
+audio {
+    position: absolute;
+    z-index: 5;
+}
+
+
+/*======================::score::=======================*/
+
+.background .scoreBox {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 10%;
+    z-index: 2;
+}
+
+.background .scoreBox aside {
+    position: absolute;
+    font: bold 2em/1em 'Microsoft Yahei', Helvetica, Arial, sans-serif;
+}
+
+.background .scoreBox .timer {
+    top: 115%;
+    width: 15%;
+    color: #7acc5a;
+    text-align: center;
+}
+
+.background .scoreBox .miles {
+    left: 0px;
+    margin: 5%;
+    color: #FF8319;
+    padding-left: 30px;
+    height: 24px;
+    line-height: 24px;
+    background: url(../images/gmf.png) no-repeat left center;
+}
+
+.background .musicOn {
+    position: absolute;
+    top: 10%;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    background: url(../images/music_on.png) no-repeat center center;
+}
+
+.background .musicOff {
+    background-image: url(../images/music_off.png)
+}
+
+.crashTip {
+    font: bold 2em/1em 'Microsoft Yahei', Helvetica, Arial, sans-serif;
+    position: absolute;
+    text-align: center;
+    width: 3em;
+    height: 1em;
+    transition: top 1s cubic-bezier(.06, .71, .33, .96);
+    -webkit-transition: top 1s cubic-bezier(.06, .71, .33, .96);
+    text-shadow: 0px 0px 5px #fff;
+}
+
+.fc_re {
+    color: #ff0000;
+}
+
+.fc_or {
+    color: #FF8319;
+    padding-left: 20px;
+    width: 2em;
+    height: 24px;
+    line-height: 24px;
+    background: url(../images/gmf.png) no-repeat left center;
+}
+
+
+/*======================::dialog::=======================*/
+
+.dialog {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: none;
+}
+
+.mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: -1;
+    opacity: .3;
+}
+
+.dialog .box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.dialog .header {
+    height: 10%;
+}
+
+.dialog .header .close {
+    float: right;
+    font: normal 2em/1em Arial, sans-serif;
+    margin: 4%;
+    color: #fff;
+}
+
+.dialog .content {
+    margin: 10%;
+    font: normal 1.2em/1em 'Microsoft Yahei', Arial, sans-serif;
+    color: #fff;
+}
+
+
+/*======================::guide::=======================*/
+
+.guide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: none;
+}
+
+.guide .container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.guide_bg_1 {
+    background: url(../images/arrow_lr.png) no-repeat center center;
+}
+
+.guide_bg_2 {
+    background: url(../images/arrow_up.png) no-repeat center center;
+}
+
+.guide article {
+    font: normal 2em/2em 'Microsoft Yahei', Arial, sans-serif;
+    color: #fff;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    margin-left: .3em;
+}
+
+.self_center {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: auto;
+}
+
+
+/*======================::gameAfter::=======================*/
+
+.gameAfter {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: none;
+}
+
+.gameAfter .mask {
+    opacity: .6;
+}
+
+.gameAfter .container {
+    position: absolute;
+    width: 250px;
+    height: 90%;
+    text-align: center;
+}
+
+.gameAfter .container .resultBox {
+    background: url(../images/success.png) no-repeat;
+    width: 250px;
+    height: 80px;
+}
+
+.gameAfter .container .header {
+    position: absolute;
+    top: 0px;
+}
+
+.gameAfter .container .infoBox {
+    position: absolute;
+    bottom: 0px;
+}
+
+.gameAfter .container p {
+    font: normal 1.1em/1.8em 'Microsoft Yahei', Arial, sans-serif;
+    color: #fff;
+}
+
+.gameAfter .container p span {
+    font-size: 1.1em;
+}
+
+.gameAfter .container .downBox {
+    position: relative;
+    text-align: left;
+    width: 200px;
+    margin: 0px 25px;
+}
+
+#inputBox {
+    z-index: 5;
+}
+
+#inputBox .mask {
+    opacity: 0.7;
+}
+
+#inputBox .container {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    z-index: 1;
+}
+
+#inputBox .close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    float: right;
+    font: normal 2em/1em Arial, sans-serif;
+    margin: 4%;
+    color: #fff;
+    z-index: 2;
+}
+
+#inputBox .btn {
+    margin-left: 0px;
+}
+
+.btn {
+    height: 30px;
+    line-height: 29px;
+    color: #fff;
+    font-size: 1em;
+    text-align: center;
+    background: #E67422;
+    display: inline-block;
+    border-radius: 5px;
+    letter-spacing: 3px;
+    margin: 10px 0px 0px 10px;
+}
+
+.btn_l {
+    width: 190px;
+    background: #FE8208;
+}
+
+.btn_m {
+    width: 85px;
+    background: #41BD43;
+}
+
+.weui_cell {
+    padding: 5px 0px;
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: #fff;
+}
+
+.weui_cell:before {
+    border-width: 0px;
+}
+
+.weui_cell_hd {
+    padding-right: .3em;
+}
+
+.weui_label {
+    display: block;
+    width: 4em;
+}
+
+.weui_cell_primary {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    border-radius: 5px;
+    background: #fff;
+    padding: 2px;
+}
+
+.weui_input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    font-size: inherit;
+    color: #333;
+    height: 1.41176471em;
+    line-height: 1.41176471;
+}
+
+
+/*====================  dialog_tab =======================*/
+
+#activity .mask {
+    opacity: 0.7;
+}
+
+#activity .container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    z-index: 1;
+}
+
+#activity .close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    float: right;
+    font: normal 1.5em/1em Arial, sans-serif;
+    margin: 2%;
+    color: #fff;
+    z-index: 2;
+}
+
+.dialog_tab {
+    position: relative;
+    height: 100%;
+}
+
+.dialog_tab .dialog_navbar {
+    display: flex;
+    z-index: 1;
+    top: 0;
+    width: 100%;
+    border-bottom: 1px solid #bbb;
+}
+
+.dialog_tab .dialog_navbar .dialog_navbar_item {
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
+    color: #ffffff;
+    font: normal 1.2em/1.8em 'Microsoft Yahei', Arial, sans-serif;
+}
+
+.dialog_tab .dialog_navbar .selected {
+    border-bottom: 1px solid #eee;
+}
+
+.dialog_tab .dialog_navbar .selected:after {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    height: 0px;
+    width: 0px;
+    border: 6px solid transparent;
+    border-top-color: #979797;
+    border-top-color: rgba(151, 151, 151, 1);
+}
+
+.dialog_tab .dialog_tab_bd {
+    color: #ffffff;
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.dialog_tab .show {
+    display: block;
+}
+
+.dialog_tab .dialog_tab_bd h3 {
+    float: left;
+    display: block;
+    color: #000000;
+    background: #fff;
+    margin: 5px 10px;
+    padding: 2px 5px;
+}
+
+.dialog_tab .dialog_tab_bd p {
+    clear: both;
+    margin: 5px 0 0 10px;
+}
+
+.dialog_tab .dialog_tab_bd p a {
+    color: #CECB30;
+    text-decoration: underline;
+}
+
+.dialog_tab .dialog_tab_bd table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dialog_tab .dialog_tab_bd table caption {
+    text-align: left;
+    padding: 5px 1px 10px;
+}
+
+.dialog_tab .dialog_tab_bd table td {
+    text-align: center;
+    border-bottom: 1px solid #bbb;
+    padding: 10px 1px;
+}
+
+.m10 {
+    margin: 10px;
+}
+
+#giftImage {
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 3em;
+    width: 300px;
+    height: 350px;
+}
+
+
+/***************** loadingBox *********************/
+
+.loadingBg {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    /*background: url(../images/ma.png) no-repeat center 15%;*/
+}
+
+.loadingBox {
+    z-index: 10;
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 10px;
+    margin: auto;
+}
+
+.loadingBox>div {
+    background-color: #67CF22;
+    height: 100%;
+    width: 6px;
+    float: left;
+    margin-left: 4px;
+    -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+    animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+.loadingBox .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+
+.loadingBox .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+.loadingBox .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+
+.loadingBox .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+
+@-webkit-keyframes stretchdelay {
+    0%, 40%, 100% {
+        -webkit-transform: scaleY(0.4)
+    }
+    20% {
+        -webkit-transform: scaleY(1.0)
+    }
+}
+
+@keyframes stretchdelay {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+    }
+    20% {
+        transform: scaleY(1.0);
+        -webkit-transform: scaleY(1.0);
+    }
+}
