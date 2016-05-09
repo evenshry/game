@@ -41,7 +41,9 @@ $(function() {
         stopPropagation(event);
     });
     $('body').on('touchstart touchmove', function(event) {
-        event.preventDefault();
+        if ($(event.target).closest('#activity').length > 0) {} else {
+            event.preventDefault();
+        }
     });
     $('input').on('touchstart', function(event) {
         $(this).focus();
@@ -625,13 +627,15 @@ var submitInfo = function() {
         if (userName === '' || userName.length > 16) {
             $('#userName').parent().addClass('bd_rd');
             return false;
+        } else {
+            $('#userName').parent().removeClass('bd_rd');
         }
         if (phone === '' || phone.length != 11) {
             $('#phone').parent().addClass('bd_rd');
             return false;
+        } else {
+            $('#phone').parent().removeClass('bd_rd');
         }
-        $('#phone').parent().removeClass('bd_rd');
-        $('#userName').parent().removeClass('bd_rd');
         var uid = $.fn.cookie('uid');
         executeAjax({
             url: service + 'info.php',
@@ -682,7 +686,7 @@ var submitInfo = function() {
                     $('#btnRaffle').hide();
                     $('#inputBox').data('todo', 0).hide();
                     $('#activity').show();
-                    $('.dialog_navbar').find('.dialog_navbar_item').eq(1).show().trigger('touchstart');
+                    $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show().trigger('touchstart');
                 }
             });
         } else {
