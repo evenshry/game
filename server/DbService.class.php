@@ -296,24 +296,24 @@ class DbService {
 		}
 		$uid = $qry["uid"];
 
-		$cnt = $this->db->count("record", [
-				"uid"
-			], [
-				"AND" => [
-					"uid" => $uid,
-					"gift" => 1
-				]
-			]
-		);
-		if ($this->hasErr()) {
-			$ack["ret"] = 2;
-			return false;
-		}
+		// $cnt = $this->db->count("record", [
+		// 		"uid"
+		// 	], [
+		// 		"AND" => [
+		// 			"uid" => $uid,
+		// 			"gift" => 1
+		// 		]
+		// 	]
+		// );
+		// if ($this->hasErr()) {
+		// 	$ack["ret"] = 2;
+		// 	return false;
+		// }
 
-		if ($cnt == 1) {
-			$ack["ret"] = 3;
-			return false;
-		}
+		// if ($cnt == 1) {
+		// 	$ack["ret"] = 3;
+		// 	return false;
+		// }
 
 		$r = rand(0, 100);
 		$win = 0;
@@ -323,7 +323,7 @@ class DbService {
 
 		$this->db->update("record", [
 				"gift" => 1,
-				"win" => $win,
+				"win[+]" => $win,
 				"#modify_time" => "NOW()"
 			], [
 				"uid" => $uid

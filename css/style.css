@@ -40,12 +40,12 @@ html, body {
 
 .background .logo {
     height: 72px;
+    text-align: center;
 }
 
 .background .logo img {
-    width: 72px;
-    height: 72px;
-    float: left;
+    width: 200px;
+    height: 44px;
 }
 
 .background .logo h1 {
