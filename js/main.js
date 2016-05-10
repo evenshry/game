@@ -85,13 +85,12 @@ $(function() {
     }
     var hasRaffle = $.fn.cookie('hasRaffle');
     if (hasRaffle != null && hasRaffle == 1) {
-        $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
         $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show();
     } else {
-        $('#btnRaffle').show(); // 如果抽过奖即隐藏抽奖按钮
         $('.dialog_navbar').find('.dialog_navbar_item').eq(2).hide();
     }
     isGuide = $.fn.cookie('isGuide');
+    $('#btnRaffle').hide();
 });
 // 引导页
 var showGuide = function(index) {
@@ -570,12 +569,7 @@ var finishGame = function(timeCount, gmfCount) {
                     document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
                     $('#currSort').text(data.rank_id);
                     $('#gameAfter').show();
-                    var hasRaffle = $.fn.cookie('hasRaffle');
-                    if (hasRaffle != null && hasRaffle == 1) {
-                        $('#btnRaffle').hide(); // 如果抽过奖即隐藏抽奖按钮
-                    } else {
-                        $('#btnRaffle').show();
-                    }
+                    $('#btnRaffle').show();
                 }
             }
         });
@@ -606,6 +600,7 @@ var finishGame = function(timeCount, gmfCount) {
                         $('#topTenBody').html(htmlContent);
                         if (show) {
                             $('#activity').show();
+                            $('#inputBox').data('todo', 1).show();
                         };
                     }
                 }
@@ -656,6 +651,7 @@ var submitInfo = function() {
                     } else if (todo && todo == 2) {
                         loadGamerRaffle();
                     }
+                    $('#inputBox').data('todo', 0).hide();
                 } else {
                     dialog({
                         content: '提交失败！请重试',
@@ -678,13 +674,12 @@ var submitInfo = function() {
                 },
                 success: function(data) {
                     if (data && data.ret === 0) {
-                        setGiftImage(data.win === 1);
+                        setGiftImage(parseInt(data.win) >= 1);
                     }
                     $.fn.cookie('hasRaffle', 1, {
                         expires: 120
                     });
                     $('#btnRaffle').hide();
-                    $('#inputBox').data('todo', 0).hide();
                     $('#activity').show();
                     $('.dialog_navbar').find('.dialog_navbar_item').eq(2).show().trigger('touchstart');
                 }
@@ -704,7 +699,7 @@ var submitInfo = function() {
                 },
                 success: function(data) {
                     if (data && data.ret === 0) {
-                        setGiftImage(data.win == 1);
+                        setGiftImage(parseInt(data.win) >= 1);
                     }
                 }
             });
