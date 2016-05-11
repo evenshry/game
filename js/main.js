@@ -22,6 +22,8 @@ var startTime, pauseTime, gmfCounts = 0,
 // 初始化页面
 $(function() {
     loadPlayerCnt();
+    loadGamerGift();
+    loadGamerTop10(false);
     initAudio();
     $('#submitPwd').on('touchstart', function() {
         var pwd = $('#password').val();
@@ -41,7 +43,11 @@ $(function() {
         stopPropagation(event);
     });
     $('body').on('touchstart touchmove', function(event) {
-        if ($(event.target).closest('#activity').length > 0) {} else {
+        if ($(event.target).closest('#activity').length > 0) {
+            //
+        } else if ($(event.target).closest('#inputBox').length > 0) {
+            //
+        } else {
             event.preventDefault();
         }
     });
@@ -527,21 +533,16 @@ var checkPassport = function(passport) {
 };
 // 加载玩家数
 var loadPlayerCnt = function() {
-    executeAjax({
-        url: service + 'pcnt.php',
-        method: 'GET',
-        success: function(data) {
-            if (data && data.ret === 0) {
-                $('#playerCount').text(data.cnt);
-                $.fn.cookie('pcnt', data.cnt, {
-                    expires: 7
-                });
+        executeAjax({
+            url: service + 'pcnt.php',
+            method: 'GET',
+            success: function(data) {
+                if (data && data.ret === 0) {
+                    $('#playerCount').text(data.all_play_cnt);
+                }
             }
-        }
-    });
-    loadGamerGift();
-    loadGamerTop10(false);
-};
+        });
+    };
 // 游戏结束
 var finishGame = function(timeCount, gmfCount) {
         var uid = $.fn.cookie('uid');
@@ -561,12 +562,13 @@ var finishGame = function(timeCount, gmfCount) {
                     $.fn.cookie('hasRaffle', data.gift, {
                         expires: 120
                     });
-                    document.getElementById('uid').innerText = data.uid;
+                    document.getElementById('uid').innerText = data.all_play_cnt;
                     document.getElementById('timeCount').innerText = timeCount;
                     document.getElementById('gmfCount').innerText = gmfCount;
                     document.getElementById('bestTime').innerText = formatMilli(data.total_time * 1000);
                     document.getElementById('gmfCountAll').innerText = data.gmf_times;
                     document.getElementById('currentPersent').innerText = Math.round((data.pcnt - data.rank_id) / (data.pcnt) * 100);
+                    $('#playerCount').text(data.all_play_cnt);
                     $('#currSort').text(data.rank_id);
                     $('#gameAfter').show();
                     $('#btnRaffle').show();
@@ -600,7 +602,7 @@ var finishGame = function(timeCount, gmfCount) {
                         $('#topTenBody').html(htmlContent);
                         if (show) {
                             $('#activity').show();
-                            $('#inputBox').data('todo', 1).show();
+                            $('#inputBox').data('todo', 0).hide();
                         };
                     }
                 }
@@ -709,12 +711,12 @@ var submitInfo = function() {
     },
     setGiftImage = function(win) {
         var image = $('#giftImage').find('img');
-        var text = $('#giftImage').find('h4');
+        var text = $('#giftImage').find('.winInfo');
         if (win) {
-            text.text('联系主办方领取奖品具体参见活动说明');
+            text.show();
             image.attr('src', 'images/zhongjiang_a.jpg');
         } else {
             image.attr('src', 'images/zhongjiang_b.jpg');
-            text.text('');
+            text.hide();
         }
     };
