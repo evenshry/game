@@ -1,7 +1,7 @@
 <?php
 /**
  * 数据库接口
- * @authors Nemo (heady713@gmail.com)
+ * @authors Nemo
  * @date    2016-04-12 12:55:46
  * @version $Id$
  */
@@ -71,6 +71,17 @@ class DbService {
 			return false;
 		}
 		$ack["cnt"] = $cnt;
+
+
+		$all_play_cnt = $this->db->max("all_record", "record_id");
+
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+		$ack["all_play_cnt"] = $all_play_cnt;
+
+
 		$ack["ret"] = 0;
 		return true;
 	}
@@ -162,6 +173,19 @@ class DbService {
 		$ack["gift"]       = $results["gift"];
 		$ack["win"]        = $results["win"];
 
+		//玩的次数
+		$all_play_cnt = $this->db->insert("all_record", [
+				"uid"        => $uid,
+				"#play_time" => "NOW()"
+			]
+		);
+		if ($this->hasErr()) {
+			$ack["ret"] = 2;
+			return false;
+		}
+		$ack["all_play_cnt"] = $all_play_cnt;
+
+
 		$ack["ret"] = 0;
 		return true;
 	}
@@ -200,7 +224,7 @@ class DbService {
 
 		$results = $this->db->query(
 			"select if(name is null, '无名大侠', concat(left(name,1),'*')) as name, concat(left(phone_no,3),'*****',right(phone_no,3)) phone_no, " .
-			"total_time, gmf_times from record order by total_time, gmf_times desc, uid limit 10"
+			"total_time, gmf_times from record where name is not null order by total_time, gmf_times desc, uid limit 10"
 		)->fetchAll();
 
 		if ($this->hasErr()) {
@@ -248,22 +272,22 @@ class DbService {
 		$phone_no = $qry["phone_no"];
 		$name     = $qry["name"];
 
-		//判断电话号码是否唯一
-		$results = $this->db->select("record", [
-				"phone_no"
-			], [
-				"phone_no" => $phone_no
-			]
-		);
-		if ($this->hasErr()) {
-			$ack["ret"] = 2;
-			return false;
-		}
+		// //判断电话号码是否唯一
+		// $results = $this->db->select("record", [
+		// 		"phone_no"
+		// 	], [
+		// 		"phone_no" => $phone_no
+		// 	]
+		// );
+		// if ($this->hasErr()) {
+		// 	$ack["ret"] = 2;
+		// 	return false;
+		// }
 
-		if (count($results) > 0) {
-			$ack["ret"] = 3;
-			return false;
-		}
+		// if (count($results) > 0) {
+		// 	$ack["ret"] = 3;
+		// 	return false;
+		// }
 
 		$this->db->update("record", [
 				"phone_no" => $phone_no,

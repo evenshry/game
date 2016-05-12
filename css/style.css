@@ -416,6 +416,7 @@ audio {
 }
 
 .weui_input {
+    -webkit-transform: translate3d(0,0,0);
     width: 100%;
     border: 0;
     outline: 0;
